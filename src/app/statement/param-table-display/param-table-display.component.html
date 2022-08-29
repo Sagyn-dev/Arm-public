@@ -1,0 +1,135 @@
+<p-toast></p-toast>
+<div class="content">
+	<div class="row col-12">
+		<div class="col-10 w-100">
+			<action-component *ngIf="action" [action]="action" (onLoaded)="onLoadAction($event)" (onChanged)="onChanged($event)"></action-component>
+		</div>
+
+		<div *ngIf="!loadAction && groups" class="col-2 text-left">
+			<button mat-raised-button class="w-100 m-1" (click)="onExecute()" color="primary" [disabled]="loadingTable" tabIndex="6">Выполнить...</button>
+
+			<ng-select
+				id="format"
+				tabIndex="1"
+				[items]="formatList"
+				bindLabel="name"
+				bindValue="id"
+				placeholder="Выберите формат печати"
+				loadingText="Загрузка..."
+				notFoundText="Не найдено"
+				class="text-left w-100 m-1"
+				[selectOnTab]="true"
+				[(ngModel)]="format"
+			>
+			</ng-select>
+
+			<div class="button-container">
+				<div class="spinner-container" *ngIf="loadReportWnd">
+					<mat-spinner diameter="24"></mat-spinner>
+				</div>
+				<button mat-raised-button class="w-100 m-1" [disabled]="loadReportWnd || !havePrint" (click)="openFastReport(false)"  tabIndex="7">Просмотр</button>
+			</div>
+			<div class="button-container">
+				<div class="spinner-container" *ngIf="loadReport">
+					<mat-spinner diameter="24"></mat-spinner>
+				</div>
+				<button mat-raised-button class="w-100 m-1" [disabled]="loadReport || !havePrint" (click)="openFastReport(true)"  tabIndex="8">Печать</button>
+			</div>
+		</div>
+	</div>
+	<wbr>
+	<div class="m-2" *ngIf="flag_exec">
+
+		<p-toolbar *ngIf="flag_printTable || formNeed">
+			<div class="p-toolbar-group-right">
+				<button pButton label="Очистить фильтр" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(dt)"></button>
+				<p-button class="m-1" icon="pi pi-print" [disabled]="loadingTable"  (onClick)="printTable()" label="Печать"></p-button>
+				<p-button class="m-1" icon="pi pi-sliders-h" [disabled]="loadingTable"  (onClick)="selectHeader()" label="Выбор колонок на печать"></p-button>
+			</div>
+		</p-toolbar>
+
+		<p-table
+			#dt2
+			styleClass="p-datatable-gridlines"
+			[columns]="fields"
+			[value]="data_table"
+			[reorderableColumns]="true"
+			[resizableColumns]="true"
+			columnResizeMode="expand"
+			[loading]="loadingTable"
+			sortMode="multiple"
+			(onFilter)="onFilter()"
+			id="Table"
+			[scrollable]="true"
+			scrollHeight="400px"
+			[autoLayout]="true"
+
+		>
+			<ng-template pTemplate="colgroup" let-columns>
+				<colgroup>
+					<col *ngFor="let col of columns" [style.width]="col.width">
+				</colgroup>
+			</ng-template>
+
+			<ng-template pTemplate="header" let-columns>
+				<tr *ngIf="haveGroup">
+					<th class="border" pResizableColumn  *ngFor="let group of groups" [colSpan]="group.fields.length" style="word-wrap: break-word; text-align: center">{{group?.title}}</th>
+				</tr>
+
+				<tr>
+					<th  *ngFor="let col of columns" pReorderableColumn pResizableColumn [pSortableColumn]="col.field">
+						{{col.header}}<p-sortIcon [field]="col.field"></p-sortIcon>
+					</th>
+				</tr>
+
+				<tr>
+					<th *ngFor="let header of columns" class="text-center">
+						<p-columnFilter *ngIf="header.type =='DateTime'" display="menu"  type="date" [matchMode]="'Равно'" [field]="header.field" [matchModeOptions]="matchModeOptions"></p-columnFilter>
+						<p-columnFilter *ngIf="header.type !=='DateTime' && header.type !=='String'" [field]="header.field" display="menu" placeholder="Введите значение"></p-columnFilter>
+						<p-columnFilter *ngIf="header.type == 'String'" [field]="header.field" [showMenu]="false"  matchMode="in">
+							<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+								<p-multiSelect
+									class="color"
+									[ngModel]="value"
+									[options]="sourceFilter?.get(header.field)"
+									appendTo="body"
+									placeholder="Все"
+									selectedItemsLabel="Выбрано {totalRecords}"
+									(onPanelHide)="onClosePanelFilter(dt)"
+									(onChange)="globalFilter($event.value,header.field)" optionLabel="name" optionValue="name">
+									<ng-template let-option pTemplate="item" >
+										<div class="p-multiselect-representative-option">
+											<span class="p-ml-1">{{option.name}}</span>
+										</div>
+									</ng-template>
+								</p-multiSelect>
+							</ng-template>
+						</p-columnFilter>
+					</th>
+				</tr>
+
+			</ng-template>
+			<ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex" let-column >
+				<tr [pReorderableRow]="index" [pSelectableRow]="columns"  (dblclick)="onSelectItem(columns)" (click)="onSelectItemTable(column)" [ngClass]="{'outofstock-th': column === record,'negative' : columns?.NOTE === 'Расчет не расшифрован'}" >
+					<th style="font-weight: 400;font-size: 10pt; overflow: hidden;" *ngFor="let col of columns">
+						<span  *ngIf="col.field == 'DATEOP' && col.field !== 'ENTRIED' && col.type == 'DateTime'"     >{{ rowData[col.field]| date:'dd.MM.yyyy HH:mm:ss'}}</span>
+						<span  *ngIf="col.field == 'ENTRIED' && col.field !== 'DATEOP' && col.type == 'DateTime'"     >{{ rowData[col.field]| date:'dd.MM.yyyy HH:mm:ss'}}</span>
+						<span  *ngIf="col.field == 'DATEOP' && col.field !== 'ENTRIED' && col.type !== 'DateTime'"    >{{ rowData[col.field]}}</span>
+						<span  *ngIf="col.field == 'ENTRIED' && col.field !== 'DATEOP' && col.type !== 'DateTime'"    >{{ rowData[col.field]}}</span>
+						<span  *ngIf="col.field !== 'DATEOP' && col.field !== 'ENTRIED'"   >{{ rowData[col.field]| armDate}}</span>
+					</th>
+				</tr>
+			</ng-template>
+
+			<ng-template pTemplate="footer" let-columns>
+				<tr >
+					<ng-container *ngFor="let field of columns">
+						<th style="background-color: #f4f4f4;font-weight: 700; border: 1px solid #afb6be" *ngIf="field.totalSum && loadTable">{{getSum(field) | number:'1.2'}}</th>
+						<th style="background-color: #f4f4f4;font-weight: 700; border: 1px solid #afb6be"  *ngIf="!field.totalSum && loadTable">-</th>
+					</ng-container>
+				</tr>
+			</ng-template>
+
+		</p-table>
+	</div>
+</div>

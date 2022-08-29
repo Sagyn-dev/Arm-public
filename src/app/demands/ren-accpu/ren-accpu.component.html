@@ -1,0 +1,403 @@
+<p-toast position="center"></p-toast>
+<p-confirmPopup></p-confirmPopup>
+<form  #form="ngForm" (ngSubmit)="onExecute(form)">
+	<div class="col-12 w-100">
+		<div class="row mt-2">
+			<div class="col-12">
+				<div class="row">
+					<div class="col-11 mt-1 mb-1 text-left"><mat-label class="font-weight-bold">ПРАВОУСТАНАВЛИВАЮЩИЙ ДОКУМЕНТ</mat-label></div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Тип правоустанавливающего документа</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="typeDoc"
+							class="text-left"
+							tabIndex="1"
+							appendTo="body"
+							[items]="typeDoc"
+							bindLabel="NAME"
+							notFoundText="Не найдено"
+							placeholder="Выберите документ"
+							required
+							loadingText="Загрузка..."
+							[searchFn]="searchNAME"
+							[selectOnTab]="true"
+							[loading]="loadingDoc"
+							[(ngModel)]="selectDoc"
+							(change)="onSelectDoc(selectDoc)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.type_doc_base)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Серия правоустанавливающего документа</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="serial-doc" type="text"  tabIndex="2" class="form-control" [(ngModel)]="serial_doc"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.serial_doc)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Номер правоустанавливающего документа</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="serial-doc" type="text"  tabIndex="3" class="form-control" [(ngModel)]="num_doc"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.num_doc)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Номер записи регистрации</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="num-reg" type="text"  tabIndex="4" class="form-control" [(ngModel)]="num_reg"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.num_rec_reg)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Дата выдачи правоустанавливающего документа</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input type="date" name="data-v" (change)="change()" required tabIndex="5"  class="form-control" [(ngModel)]="data_v" max="9999-12-12" />
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.data_doc_issue)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Учреждение, выдавшее правоустанавливающий документ</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="inst"
+							class="text-left"
+							tabIndex="6"
+							appendTo="body"
+							[items]="inst"
+							bindLabel="NAME"
+							notFoundText="Не найдено"
+							placeholder="Выберите..."
+							required
+							loadingText="Загрузка..."
+							[searchFn]="searchNAME"
+							[selectOnTab]="true"
+							[loading]="loadingInst"
+							[(ngModel)]="selectInst"
+							(change)="onSelectInst(selectInst)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.org_doc)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><label class="d-inline-block">* Сканкопия правоустанавливающего документа</label></div>
+					<div class="col-8 mt-1 mb-1"><app-file-upload (change)="change()" name="scan"  [required]="true" tabIndex="7" [config]="fileConfig" [(scan)]="scan_id"></app-file-upload></div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.scan_base_doc)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-11"><hr></div>
+				</div>
+
+				<div class="row">
+					<div class="col-6 mt-1 mb-1 text-left"><mat-label class="font-weight-bold">Документ-основание регистрации права собственности</mat-label></div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Тип документа основания регистрации права собственности</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="typeDocReg"
+							class="text-left"
+							tabIndex="8"
+							appendTo="body"
+							[items]="typeDocReg"
+							bindLabel="NAME"
+							notFoundText="Не найдено"
+							placeholder="Выберите документ"
+							loadingText="Загрузка..."
+							[searchFn]="searchNAME"
+							[selectOnTab]="true"
+							[loading]="loadTypeDocReg"
+							[(ngModel)]="selectTypeDocReg"
+							(change)="onSelectTypeDocReg(selectTypeDocReg)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.type_doc_base)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><label class="d-inline-block">Сканкопия документа основания</label></div>
+					<div class="col-8 mt-1 mb-1"><app-file-upload (change)="change()" name="sc_doc_bas"   tabIndex="9" [config]="fileConfig" [(scan)]="sc_doc_bas"></app-file-upload></div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.scan_base_doc)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+
+				<div class="row">
+					<div class="col-11"><hr></div>
+				</div>
+
+				<div class="row">
+					<div class="col-11 mt-1 mb-1 text-left"><mat-label class="font-weight-bold">ПАСПОРТ</mat-label></div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Паспорт иного государства</mat-label></div>
+					<div class="col-8 mt-1 mb-1 text-left">
+						<mat-checkbox name="passport_another_country"  [(ngModel)]="passport_another_country"></mat-checkbox>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_another_country)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Серия паспорта</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="serialps" type="tel" mask="0000" tabIndex="10" maxlength="4" class="form-control" [(ngModel)]="s_pasp" />
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_seria)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Номера паспорта</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="numb-ps" type="tel" mask="000000" tabIndex="11" maxlength="6" class="form-control" [(ngModel)]="n_pasp"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_num)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Дата выдачи паспорта</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input type="date" name="datav-ps" (change)="change()" required tabIndex="12"  class="form-control" [(ngModel)]="datav_ps" max="9999-12-12" />
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_data)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Кем выдан паспорт (код подразделения)</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="kod_podr"
+							class="text-left"
+							tabIndex="13"
+							appendTo="body"
+							[items]="kod_podr"
+							[virtualScroll]="true"
+							bindLabel="NAME"
+							notFoundText="Не найдено"
+							placeholder="Выберите..."
+							required
+							loadingText="Загрузка..."
+							[searchFn]="searchNAME"
+							[selectOnTab]="true"
+							[loading]="loadingKod"
+							[(ngModel)]="selectKodPodr"
+							(change)="onSelectKod(selectKodPodr)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_kod)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><label class="d-inline-block">* Сканкопия паспорта</label></div>
+					<div class="col-8 mt-1 mb-1"><app-file-upload (change)="change()" name="scan_ps"  [required]="true" tabIndex="14" [config]="fileConfig" [(scan)]="sc_pasp"></app-file-upload></div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_scan)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-11"><hr></div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Квартплатный лицевой счет</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							tabIndex="15"
+							[items]="accountFlataccs"
+							name="accpu-kvt"
+							bindLabel="ACC_PU"
+							bindValue="ACC_PU"
+							placeholder="Выберите..."
+							loadingText="Загрузка..."
+							notFoundText="Не найдено"
+							class="text-left"
+							[selectOnTab]="true"
+							[loading]="loadingAccpu"
+							[(ngModel)]="selectItemAccpu"
+							(change)="onSelectKvt(selectItemAccpu)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.accpu_kvt)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Лицевой счет взносов на капитальный ремонт</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="accpuVkr"
+							class="text-left"
+							tabIndex="16"
+							appendTo="body"
+							[items]="vkrAccpu"
+							[virtualScroll]="true"
+							bindLabel="ACC_PU"
+							notFoundText="Не найдено"
+							placeholder="Выберите..."
+							loadingText="Загрузка..."
+							[searchFn]="searchNAME"
+							[selectOnTab]="true"
+							[loading]="loadVkr"
+							[(ngModel)]="selectVkr"
+							(change)="onSelectVkr(selectVkr)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.accpu_vpr)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Общая площадь жилого (нежилого) помещения</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="s-room" type="number" required tabIndex="17" class="form-control" [(ngModel)]="s_room"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.s_live)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Форма собственности</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="forma-sobs"
+							class="text-left"
+							tabIndex="18"
+							appendTo="body"
+							[items]="forma_sobst"
+							bindLabel="NAME"
+							notFoundText="Не найдено"
+							placeholder="Выберите..."
+							required
+							loadingText="Загрузка..."
+							[searchFn]="searchNAME"
+							[selectOnTab]="true"
+							[loading]="loadingForms"
+							[(ngModel)]="selectForms"
+							(change)="onSelectFormSobst(selectForms)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.type_own)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Общая совместная собственность</mat-label></div>
+					<div class="col-8 mt-1 mb-1 text-left">
+						<mat-checkbox name="flag-sobst" (change)="onChangeFlagSobst(flagSobst)"  [(ngModel)]="flagSobst"></mat-checkbox>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.chk_share_onw)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Размер доли в праве общей собственности</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" [disabled]="flagSobst" name="s_dolya" type="text" required tabIndex="19" class="form-control" [(ngModel)]="s_dolya"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.dolya_share_own)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Ф.И.О. собственника</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="fio_ab" type="text" required tabIndex="20" class="form-control" [(ngModel)]="fio_ab"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.fio_own)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Сканкопия заявления с подписью</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<app-file-upload (change)="change()" name="statement-scan"  tabIndex="21" [config]="fileConfig" [(scan)]="statement_scan"></app-file-upload>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.scan_statement)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><label class="d-inline-block">* Номер телефона</label></div>
+					<div class="col-8 mt-1 mb-1"><input (change)="change()" tabIndex="22" name="phone" mask="0(000)000-00-00" required type="tel" class="form-control" [(ngModel)]="tel"/></div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.phone)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row" [formGroup]="registerForm">
+					<div class="col-3 mt-1 mb-1 text-left"><label class="d-inline-block">Email-адрес</label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input type="email" (change)="change()" formControlName="email" placeholder="example@domine.com" tabIndex="23" class="form-control"/>
+						<div *ngIf="f.email.errors" [ngClass]="{ 'is-invalid': f.email.errors }" class="invalid-feedback">
+							<div *ngIf="f.email.errors.email">Введен некорректный Email-адрес</div>
+						</div>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.email)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row col-xl-12">
+					<button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loadingSubmit">
+						<span *ngIf="loadingSubmit" class="spinner-border spinner-border-sm mr-1"></span>
+						Отправить
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

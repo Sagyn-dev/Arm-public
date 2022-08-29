@@ -1,0 +1,174 @@
+<h1 mat-dialog-title class="text-center">Поиск по адресу</h1>
+<mat-dialog-content>
+	<div mat-dialog-content *ngIf="show">
+			<mat-label>Тип населенного пункта</mat-label>
+			<ng-select
+				  tabEnterIndex="1"
+				  [items]="cityType"
+				  #scityType
+				  style="overflow: visible"
+				  bindLabel="name"
+				  bindValue="id"
+				  notFoundText="Не найдено"
+				  placeholder="Выберите..."
+				  required
+				  loadingText="Загрузка..."
+				  [selectOnTab]="true"
+				  [loading]="loadingCityType"
+				  [(ngModel)]="selectedCityTypeID"
+				  (change)="onSelectCityType(selectedCityTypeID)">
+			</ng-select>
+
+			<mat-label>Населенный пункт</mat-label>
+			<ng-select
+				#scity
+				tabEnterIndex="2"
+				[items]="city"
+				style="overflow: visible"
+				bindLabel="name"
+				bindValue="id"
+				notFoundText="Не найдено"
+				loadingText="Загрузка..."
+				[searchFn]="searchItem"
+				[selectOnTab]="true"
+				[loading]="loadingCity"
+				[(ngModel)]="selectedCityID"
+				(change)="onSelectCity()"
+			>
+			</ng-select>
+
+			<mat-label>Тип улицы</mat-label>
+			<ng-select
+				#sstreetType
+				tabEnterIndex="3"
+				[items]="streetType"
+				style="overflow: visible"
+				bindLabel="name"
+				bindValue="id"
+				notFoundText="Не найдено"
+				loadingText="Загрузка..."
+				[searchFn]="searchItem"
+				[selectOnTab]="true"
+				[loading]="loadingStreetType"
+				[(ngModel)]="selectedStreetTypeID"
+				(change)="onSelectStreetType(selectedCityID,selectedStreetTypeID)">
+			</ng-select>
+
+			<mat-label>Улица</mat-label>
+			<ng-select
+				#sstreet
+				tabEnterIndex="4"
+				[items]="street"
+				bindLabel="name"
+				style="overflow: visible"
+				bindValue="id"
+				dropdownPosition="auto"
+				notFoundText="Не найдено"
+				loadingText="Загрузка..."
+				[searchFn]="searchItem"
+				[selectOnTab]="true"
+				[loading]="loadingStreet"
+				[(ngModel)]="selectedStreetID"
+				(change)="onSelectHouse(selectedStreetID)" >
+			</ng-select>
+
+			<mat-label>Дом</mat-label>
+			<ng-select
+				#shouse
+				tabEnterIndex="5"
+				[items]="house"
+				bindLabel="name"
+				style="overflow: visible"
+				bindValue="id"
+				dropdownPosition = "top"
+				notFoundText="Не найдено"
+				loadingText="Загрузка..."
+				[searchFn]="searchItem"
+				[selectOnTab]="true"
+				[loading]="loadingHouse"
+				[(ngModel)]="selectedHouseID"
+				(change)="onSelectFlat(selectedHouseID)">
+			</ng-select>
+
+			<mat-label>Квартира</mat-label>
+			<ng-select
+				#sflat
+				tabEnterIndex="6"
+				[items]="flat"
+				bindLabel="name"
+				bindValue="id"
+				style="overflow: visible"
+				dropdownPosition = "top"
+				notFoundText="Не найдено"
+				loadingText="Загрузка..."
+				[selectOnTab]="true"
+				[loading]="loadingFlat"
+				[(ngModel)]="selectedFlatID"
+				>
+			</ng-select>
+	</div>
+
+	<div mat-dialog-actions class="pb-3">
+		<div class="button-container">
+			<div class="spinner-container" *ngIf="loadingAccount">
+				<mat-spinner diameter="24"></mat-spinner>
+			</div>
+			<button mat-raised-button [disabled]="loadingAccount" (click)="searchAccount()" color="primary" tabEnterIndex="7">Применить</button>
+			<button mat-raised-button (click)="onNoClick()" class="ml-1">Закрыть</button>
+			<button mat-raised-button (click)="showHide()" class="ml-1">{{buttonName}}</button>
+			<mat-checkbox (change)="onSaveSelect($event.checked)"  [checked]="isSaveSelect" color="primary" class="ml-3">Сохранять выбор</mat-checkbox>
+		</div>
+	</div>
+	<hr>
+
+	<div *ngIf="isResultSearchAccount" class="mt-1">
+
+				<p-table #dt
+							[columns]="cols"
+							styleClass="p-datatable-sm"
+							[value]="accountInfo"
+							[scrollable]="true"
+							[autoLayout]="true"
+							scrollHeight="350px"
+							selectionMode="single"
+							dataKey="accpu">
+					<ng-template pTemplate="header" let-columns>
+						<tr>
+							<th style="word-break: break-word;font-weight: 400; width: 100px" class="text-left" pSortableColumn="status">Статус лицевого счета <p-sortIcon field="status"></p-sortIcon></th>
+							<th style="word-break: break-word;font-weight: 400; width: 200px" class="text-center" pSortableColumn="address">Адрес <p-sortIcon field="address"></p-sortIcon></th>
+							<th style="word-break: break-word;font-weight: 400; width: 100px" class="text-center" pSortableColumn="accpu">Лицевой счет <p-sortIcon field="accpu"></p-sortIcon></th>
+							<th style="word-break: break-word;font-weight: 400; width: 160px; font-size: 11pt" class="text-center" pSortableColumn="fio">Получатель ЕПД<p-sortIcon field="fio"></p-sortIcon></th>
+							<th style="word-break: break-word;font-weight: 400; width: 130px" class="text-center" pSortableColumn="type">Тип лицевого счета <p-sortIcon field="type"></p-sortIcon></th>
+						</tr>
+
+						<tr>
+							<th *ngFor="let col of columns" [ngSwitch]="col.field">
+								<p-columnFilter [field]="col.field" [showMenu]="false" matchMode="in">
+									<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+										<p-multiSelect [ngModel]="value" [options]="getShortName(col.field)" emptyMessage="Не найдено" appendTo="body" placeholder="Все" selectedItemsLabel="Выбрано {totalRecords}"
+															(onChange)="filter($event.value)"  >
+											<ng-template let-option pTemplate="item">
+												<div class="p-multiselect-representative-option">
+													<span class="p-ml-1">{{option}}</span>
+												</div>
+											</ng-template>
+										</p-multiSelect>
+									</ng-template>
+								</p-columnFilter>
+							</th>
+						</tr>
+
+					</ng-template>
+					<ng-template pTemplate="body" let-account>
+						<tr  [pSelectableRowDblClick]="account" [pSelectableRow]="account" (dblclick)="onSelectAccp(account)" (keyup.enter)="onSelectAccp(account)" (keyup.space)="onSelectAccp(account)">
+							<td style="width: 100px">{{account.status}}</td>
+							<td style="word-break: break-word;width: 200px">{{account.address}}</td>
+							<td style="width: 100px">{{account.accpu}}</td>
+							<td style="word-break: break-word;width: 160px">{{account.fio}}</td>
+							<td style="word-break: break-word;width: 130px">{{account.type}}</td>
+						</tr>
+					</ng-template>
+				</p-table>
+
+	</div>
+</mat-dialog-content>

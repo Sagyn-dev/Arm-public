@@ -1,0 +1,496 @@
+<p-toast></p-toast>
+
+<div class="col-12">
+	<div class="col-12">
+		<div class="row">
+			<div class="col-9">
+				<div class="row">
+					<div class="col-4"><label>Лицевой счет</label></div>
+					<div class="col-8">
+						<ng-select
+							tabIndex="1"
+							[items]="accountFlataccs"
+							bindLabel="name"
+							bindValue="id"
+							placeholder="Выберите..."
+							loadingText="Загрузка..."
+							notFoundText="Не найдено"
+							class="text-left trim-info"
+							[selectOnTab]="true"
+							[loading]="loading"
+							[(ngModel)]="selectItemAccpu"
+						>
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.name">{{item.name}}</span>
+							</ng-template>
+						</ng-select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4"><label class="d-inline-block">Дата начала </label></div>
+					<div class="col-8"><input 	tabIndex="2" type="date" class="form-control" [(ngModel)]="dateBegin"  max="9999-12-12"/></div>
+				</div>
+				<div class="row">
+					<div class="col-4"><label class="d-inline-block">Дата окончания </label></div>
+					<div class="col-8"><input 	tabIndex="3" type="date" class="form-control" [(ngModel)]="dateEnd" max="9999-12-12"/></div>
+				</div>
+				<div class="row">
+					<div class="col-4"><label class="d-inline-block">Расчетная дата</label></div>
+					<div class="col-8"><input  tabIndex="4" type="date" class="form-control" [(ngModel)]="dateCalc" max="9999-12-12"/></div>
+				</div>
+			</div>
+			<div class="col-2">
+				<div class="row">
+					<div class="button-container">
+						<div class="spinner-container" *ngIf="loadingTable">
+							<mat-spinner diameter="24"></mat-spinner>
+						</div>
+						<button 	tabIndex="5" mat-raised-button class="w-100 m-1" color="primary" (click)="onExecute()" [disabled]="!loadingTable && !selectItemAccpu">Выполнить...</button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="button-container">
+						<div class="spinner-container" *ngIf="loadReport">
+							<mat-spinner diameter="24"></mat-spinner>
+						</div>
+					<button mat-raised-button class="w-100 m-1" [disabled]="!dataMainTable || loadReport" (click)="openFastReport(true)"  tabIndex="7">Печать</button>
+					</div>
+				</div>
+
+				<div class="row">
+						<ng-select
+							style="margin-left: 5px; margin-right: -5px"
+							id="format"
+							tabIndex="1"
+							[items]="formatList"
+							bindLabel="name"
+							bindValue="id"
+							placeholder="Выберите формат печати"
+							loadingText="Загрузка..."
+							notFoundText="Не найдено"
+							class="text-left w-100"
+							[selectOnTab]="true"
+							[(ngModel)]="format"
+						>
+						</ng-select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<p class="m-2 p-1 text-left">{{helpText}}</p>
+		</div>
+	</div>
+	<div class="text-center">
+		<span *ngIf="loadingTable" class="spinner-border spinner-border mt-3"></span>
+	</div>
+
+	<wbr>
+	<div  class="table-content mr-3 ml-3">
+		<p-toolbar>
+			<div class="p-toolbar-group-right">
+				<p-multiSelect class="mr-1" [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+									selectedItemsLabel="Выбрано колонок {0}" [style]="{minWidth: '200px'}" placeholder="Выберите колонки"></p-multiSelect>
+				<button pButton label="Очистить фильтр" class="p-button-outlined mr-1" icon="pi pi-filter-slash" (click)="clear(dt_main)"></button>
+				<button pButton label="Просмотреть связанные документы" class="p-button-outlined mr-1" icon="pi pi-images" [disabled]="loadingTable"  (click)="linkDock()"></button>
+				<button pButton [label]="buttonName" class="p-button-outlined mr-1" [icon]="iconShowHide" (click)="showHide()"></button>
+			</div>
+		</p-toolbar>
+		<p-table
+			*ngIf="show"
+			#dtmain
+			styleClass="p-datatable-sm"
+			dataKey="id"
+			[value]="dataMainTable"
+			[columns]="selectedColumns"
+			[reorderableColumns]="true"
+			[resizableColumns]="true"
+			columnResizeMode="expand"
+			[loading]="loadingTable"
+			sortMode="multiple"
+			scrollHeight="300px"
+			[scrollable]="true"
+			[autoLayout]="false"
+			(onFilter)="onFilter()"
+			stateStorage="local"
+			stateKey="state-local"
+			class="w-100"
+		>
+			<ng-template pTemplate="colgroup" let-columns>
+				<colgroup>
+					<col *ngFor="let col of columns">
+				</colgroup>
+			</ng-template>
+
+			<ng-template pTemplate="header"  let-columns>
+				<tr class="w-100">
+					<th *ngFor="let col of columns" pResizableColumn pReorderableColumn [pSortableColumn]=col.field [ngStyle]="{'width':  '10%'}">
+						{{col.header}}<p-sortIcon [field]="col.field"></p-sortIcon>
+					</th>
+				</tr>
+				<tr class="w-100">
+					<th *ngFor="let col of columns" pResizableColumn [ngStyle]="{'width':  '10%'}">
+						<p-columnFilter *ngIf="col.type == 'String'" [field]="col.field" [showMenu]="false"  matchMode="in">
+							<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+								<p-multiSelect
+									class="color"
+									[ngModel]="value"
+									[options]="sourceFilter?.get(col.field)"
+									appendTo="body"
+									placeholder="Все"
+									selectedItemsLabel="Выбрано {totalRecords}"
+									(onPanelHide)="onClosePanelFilter(dtmain)"
+									(onChange)="filter($event.value)" [optionValue]="'name'" [optionLabel]="'name'">
+										<ng-template let-option pTemplate="item" >
+											<div class="p-multiselect-representative-option">
+												<span class="p-ml-1">{{option.name}}</span>
+											</div>
+										</ng-template>
+								</p-multiSelect>
+							</ng-template>
+						</p-columnFilter>
+						<p-columnFilter *ngIf="col.type == 'Decimal'" [field]="col.field" display="menu" placeholder="Введите значение"></p-columnFilter>
+
+						<p-columnFilter *ngIf="col.type == 'Date'" display="menu" type="date" [matchMode]="'Равно'" [field]="col.field" [matchModeOptions]="matchModeOptions"></p-columnFilter>
+
+						<p-columnFilter *ngIf="col.type == 'DateTime'" display="menu"  type="date" [matchMode]="'Равно'" [field]="col.field" [matchModeOptions]="matchModeOptions"></p-columnFilter>
+					</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-rowData let-column let-index="rowIndex" let-columns="columns">
+				<tr  class="w-100" [pReorderableRow]="index" [pSelectableRow]="column" (click)="onSelectItem(column)" (keyup.enter)="onActionDocCancel(column)" [ngClass]="{'outofstock': column === record}">
+					<td *ngFor="let col of columns" [ngStyle]="{'width':  '10%'}">
+						<span *ngIf="col.type == 'Decimal'">{{rowData[col.field] | number:'1.2'}}</span>
+						<span *ngIf="col.type == 'Date'">{{rowData[col.field] | armDate}}</span>
+						<span *ngIf="col.type == 'DateTime'">{{rowData[col.field] | date:'dd.MM.yyyy HH:mm:ss'}}</span>
+						<span style="word-break: break-all;"  *ngIf="col.type == 'String' && col.field !== 'DIR_LINK' ">{{rowData[col.field] }}</span>
+						<span style="word-break: break-all;"  *ngIf="col.type == 'String' && col.field === 'DIR_LINK' "><a [href]="link">{{rowData['DIR_LINK']}}</a></span>
+					</td>
+				</tr>
+			</ng-template>
+
+			<ng-template pTemplate="footer"  let-columns>
+				<tr class="w-100">
+					<th *ngFor="let col of columns" [ngStyle]="{'width':  '10%'}" style="border-right:none!important; border-bottom: none!important;text-align: center!important;">
+						<span *ngIf="loadingData && col.totalSum" >{{ getSumMain(col) | number:'1.2'}}</span>
+					</th>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+
+	<wbr>
+
+	<div class="tab-content" *ngIf="dataMainTable">
+		<mat-tab-group>
+			<mat-tab label="Документы гашения">
+				<p-toolbar>
+					<div class="p-toolbar-group-right">
+						<p-button class="m-1" icon="pi pi-print" [disabled]="!dataDoc"  (onClick)="exportPdf(dataDoc,de,select_fields,colsDoc)" label="Печать"></p-button>
+						<button pButton label="Очистить фильтр" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(de)"></button>
+					</div>
+				</p-toolbar>
+				<p-table
+					#de
+					[columns]="dataDoc"
+					[value]="dataDoc"
+					[scrollable]="true"
+					[resizableColumns]="true"
+					scrollHeight="250px"
+					selectionMode="single"
+					(onFilter)="onFilterDoc()"
+				>
+					<ng-template pTemplate="colgroup" let-columns>
+						<colgroup>
+							<col *ngFor="let i of colgroup" >
+						</colgroup>
+					</ng-template>
+
+					<ng-template pTemplate="header">
+						<tr>
+							<th pSortableColumn="ID" pResizableColumn>УИД документа <p-sortIcon field="ID"></p-sortIcon></th>
+							<th pSortableColumn="SM" pResizableColumn>Сумма <p-sortIcon field="SM"></p-sortIcon></th>
+							<th pSortableColumn="DATEB" pResizableColumn>Начальная дата <p-sortIcon field="DATEB"></p-sortIcon></th>
+							<th pSortableColumn="DATEE" pResizableColumn>Конечная дата <p-sortIcon field="DATEE"></p-sortIcon></th>
+							<th pSortableColumn="KONAME" pResizableColumn>Операция <p-sortIcon field="KONAME"></p-sortIcon></th>
+							<th pSortableColumn="OPMONTH" pResizableColumn>Оп.месяц <p-sortIcon field="OPMONTH"></p-sortIcon></th>
+							<th pSortableColumn="FINE" pResizableColumn>Пеня <p-sortIcon field="FINE"></p-sortIcon></th>
+							<th pSortableColumn="NOTE" pResizableColumn>Основание <p-sortIcon field="NOTE"></p-sortIcon></th>
+							<th pSortableColumn="ENTRIED" pResizableColumn>Дата создания <p-sortIcon field="ENTRIED"></p-sortIcon></th>
+							<th pSortableColumn="SUPP_NAME" pResizableColumn>Поставщик <p-sortIcon field="SUPP_NAME"></p-sortIcon></th>
+							<th pSortableColumn="COMP_NAME" pResizableColumn>Компания <p-sortIcon field="COMP_NAME"></p-sortIcon></th>
+						</tr>
+						<tr>
+							<th>
+								<p-columnFilter  field="ID" [showMenu]="false"  matchMode="in">
+									<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+										<p-multiSelect
+											class="color"
+											[ngModel]="value"
+											[options]="sourceFilterDoc?.get('ID')"
+											appendTo="body"
+											placeholder="Все"
+											selectedItemsLabel="Выбрано {totalRecords}"
+											(onPanelHide)="onClosePanelFilterDoc(de)"
+											(onChange)="filter($event.value)" [optionValue]="'name'" [optionLabel]="'name'">
+											<ng-template let-option pTemplate="item" >
+												<div class="p-multiselect-representative-option">
+													<span class="p-ml-1">{{option.name}}</span>
+												</div>
+											</ng-template>
+										</p-multiSelect>
+									</ng-template>
+								</p-columnFilter>
+							</th>
+							<th>
+								<p-columnFilter field="SM" display="menu" placeholder="Введите значение"></p-columnFilter>
+							</th>
+							<th>
+								<p-columnFilter  display="menu"  type="date" [matchMode]="'Равно'" field="DATEB" [matchModeOptions]="matchModeOptions"></p-columnFilter>
+							</th>
+							<th>
+								<p-columnFilter  display="menu"  type="date" [matchMode]="'Равно'" field="DATEE" [matchModeOptions]="matchModeOptions"></p-columnFilter>
+							</th>
+							<th>
+								<p-columnFilter  field="KONAME" [showMenu]="false"  matchMode="in">
+									<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+										<p-multiSelect
+											class="color"
+											[ngModel]="value"
+											[options]="sourceFilterDoc?.get('KONAME')"
+											appendTo="body"
+											placeholder="Все"
+											selectedItemsLabel="Выбрано {totalRecords}"
+											(onPanelHide)="onClosePanelFilterDoc(de)"
+											(onChange)="filter($event.value)" [optionValue]="'name'" [optionLabel]="'name'">
+											<ng-template let-option pTemplate="item" >
+												<div class="p-multiselect-representative-option">
+													<span class="p-ml-1">{{option.name}}</span>
+												</div>
+											</ng-template>
+										</p-multiSelect>
+									</ng-template>
+								</p-columnFilter>
+							</th>
+							<th>
+								<p-columnFilter  display="menu"  type="date" [matchMode]="'Равно'" field="OPMONTH" [matchModeOptions]="matchModeOptions"></p-columnFilter>
+							</th>
+							<th><p-columnFilter  field="FINE" display="menu" placeholder="Введите значение"></p-columnFilter></th>
+							<th>
+								<p-columnFilter  field="NOTE" [showMenu]="false"  matchMode="in">
+									<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+										<p-multiSelect
+											class="color"
+											[ngModel]="value"
+											[options]="sourceFilterDoc?.get('NOTE')"
+											appendTo="body"
+											placeholder="Все"
+											selectedItemsLabel="Выбрано {totalRecords}"
+											(onPanelHide)="onClosePanelFilterDoc(de)"
+											(onChange)="filter($event.value)" [optionValue]="'name'" [optionLabel]="'name'">
+											<ng-template let-option pTemplate="item" >
+												<div class="p-multiselect-representative-option">
+													<span class="p-ml-1">{{option.name}}</span>
+												</div>
+											</ng-template>
+										</p-multiSelect>
+									</ng-template>
+								</p-columnFilter>
+							</th>
+							<th>
+								<p-columnFilter  display="menu"  type="date" [matchMode]="'Равно'" field="ENTRIED" [matchModeOptions]="matchModeOptions"></p-columnFilter>
+							</th>
+							<th>
+								<p-columnFilter  field="SUPP_NAME" [showMenu]="false"  matchMode="in">
+									<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+										<p-multiSelect
+											class="color"
+											[ngModel]="value"
+											[options]="sourceFilterDoc?.get('SUPP_NAME')"
+											appendTo="body"
+											placeholder="Все"
+											selectedItemsLabel="Выбрано {totalRecords}"
+											(onPanelHide)="onClosePanelFilterDoc(de)"
+											(onChange)="filter($event.value)" [optionValue]="'name'" [optionLabel]="'name'">
+											<ng-template let-option pTemplate="item" >
+												<div class="p-multiselect-representative-option">
+													<span class="p-ml-1">{{option.name}}</span>
+												</div>
+											</ng-template>
+										</p-multiSelect>
+									</ng-template>
+								</p-columnFilter>
+							</th>
+							<th>
+								<p-columnFilter  field="COMP_NAME" [showMenu]="false"  matchMode="in">
+									<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+										<p-multiSelect
+											class="color"
+											[ngModel]="value"
+											[options]="sourceFilterDoc?.get('COMP_NAME')"
+											appendTo="body"
+											placeholder="Все"
+											selectedItemsLabel="Выбрано {totalRecords}"
+											(onChange)="filter($event.value)" [optionValue]="'name'" [optionLabel]="'name'">
+											<ng-template let-option pTemplate="item" >
+												<div class="p-multiselect-representative-option">
+													<span class="p-ml-1">{{option.name}}</span>
+												</div>
+											</ng-template>
+										</p-multiSelect>
+									</ng-template>
+								</p-columnFilter>
+							</th>
+						</tr>
+
+					</ng-template>
+					<ng-template pTemplate="body" let-column>
+						<tr [pSelectableRow]="column">
+							<td>{{column.ID}}</td>
+							<td>{{column.SM | number:'1.2'}}</td>
+							<td>{{column.DATEB | date:'dd.MM.yyyy'}}</td>
+							<td>{{column.DATEE | date:'dd.MM.yyyy'}}</td>
+							<td>{{column.KONAME}}</td>
+							<td>{{column.OPMONTH | date:'dd.MM.yyyy'}}</td>
+							<td>{{column.FINE}}</td>
+							<td>{{column.NOTE}}</td>
+							<td>{{column.ENTRIED | date:'dd.MM.yyyy'}}</td>
+							<td>{{column.SUPP_NAME}}</td>
+							<td>{{column.COMP_NAME}}</td>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="footer" >
+						<tr>
+							<th></th>
+							<th *ngIf="loadingDoc"  style="background-color: #f4f4f4;font-weight: 700; border: 1px solid #afb6be">
+								{{sm_doc | number:'1.2'}}
+							</th>
+							<th colspan="9"></th>
+						</tr>
+					</ng-template>
+				</p-table>
+
+
+			</mat-tab>
+
+			<mat-tab label="Расшифровка начислений по субтарифам">
+				<p-toolbar>
+					<div class="p-toolbar-group-right">
+						<p-button class="m-1" icon="pi pi-print" [disabled]="!dataSubRate"  (click)="exportPdf(dataSubRate,ds,selectColsTariff,colsTariff)" label="Печать"></p-button>
+					</div>
+				</p-toolbar>
+				<p-table
+					#ds
+					[columns]="dataSubRate"
+					[value]="dataSubRate"
+					[scrollable]="true"
+					scrollHeight="300px"
+					selectionMode="single">
+
+					<ng-template pTemplate="header">
+						<tr>
+							<th pSortableColumn="TYPE_TARIF" pResizableColumn>Тип субтарифа <p-sortIcon field="TYPE_TARIF"></p-sortIcon></th>
+							<th pSortableColumn="TARIF" pResizableColumn>Тариф <p-sortIcon field="TARIF"></p-sortIcon></th>
+							<th pSortableColumn="VOLUME" pResizableColumn>Объем <p-sortIcon field="VOLUME"></p-sortIcon></th>
+							<th pSortableColumn="SUMM" pResizableColumn>Сумма <p-sortIcon field="SUMM"></p-sortIcon></th>
+						</tr>
+					</ng-template>
+
+					<ng-template pTemplate="body" let-column>
+						<tr [pSelectableRow]="column">
+							<td>{{column.TYPE_TARIF}}</td>
+							<td>{{column.TARIF }}</td>
+							<td>{{column.VOLUME }}</td>
+							<td>{{column.SUMM }}</td>
+					</ng-template>
+
+				</p-table>
+			</mat-tab>
+		</mat-tab-group>
+	</div>
+
+</div>
+
+<p-dialog header="Просмотр связанных документов" appendTo="body" [style]="{'width': '50vw'}" [autoZIndex]="false" [baseZIndex]="1004" [maximizable]="true" position="bottom" [(visible)]="display">
+	<div class="row m-1">
+		<mat-checkbox name="flag" (change)="onChange(flag)"  [(ngModel)]="flag">Показать все связанные скан-копии</mat-checkbox>
+	</div>
+	<hr>
+	<div class="text-center">
+		<span *ngIf="loadingDoclink" class="spinner-border spinner-border mt-3"></span>
+	</div>
+	<div class="justify-content-center">
+		<p-table
+			#ds
+			styleClass="p-datatable-sm"
+			[value]="docList"
+			[scrollable]="true"
+			[loading]="loadingDoclink"
+			[autoLayout]="true"
+			scrollHeight="300px"
+			selectionMode="single">
+
+			<ng-template pTemplate="header" style="width: 100%;">
+				<tr>
+					<th  style="width: 100px"></th>
+					<th  class="border-right border-left" colspan="2" >Владелец</th>
+					<th  class="border-right"></th>
+					<th  class="border-right"></th>
+					<th  class="border-right" colspan="2">Системная информация</th>
+				</tr>
+				<tr>
+					<th  style="width: 100px" class="border-right" pSortableColumn="ID" pResizableColumn>Код<p-sortIcon field="ID"></p-sortIcon></th>
+					<th class="border-right" pSortableColumn="OWNER_SUBJ" pResizableColumn>Тип<p-sortIcon field="OWNER_SUBJ"></p-sortIcon></th>
+					<th class="border-right" pSortableColumn="REFERENSE_VALUE" pResizableColumn>Значение<p-sortIcon field="REFERENSE_VALUE"></p-sortIcon></th>
+					<th class="border-right" pSortableColumn="DESCRIPTION" pResizableColumn>Описание<p-sortIcon field="DESCRIPTION"></p-sortIcon></th>
+					<th class="border-right" pSortableColumn="ENTRIED" pResizableColumn>Дата создания<p-sortIcon field="ENTRIED"></p-sortIcon></th>
+					<th class="border-right" pSortableColumn="FILENAME" pResizableColumn>Имя исходного файла<p-sortIcon field="FILENAME"></p-sortIcon></th>
+					<th class="border-right" pSortableColumn="NAME_USER" pResizableColumn>Пользователь<p-sortIcon field="NAME_USER"></p-sortIcon></th>
+				</tr>
+			</ng-template>
+
+			<ng-template pTemplate="body" let-column>
+				<tr [pSelectableRow]="column" (dblclick)="onShow(column)" [ngClass]="{'outofstock': column === this.selectRec}" >
+					<td style="width: 100px">{{column.ID}}</td>
+					<td>{{column.OWNER_SUBJ }}</td>
+					<td>{{column.REFERENSE_VALUE }}</td>
+					<td>{{column.DESCRIPTION }}</td>
+					<td>{{column.ENTRIED  | date:'dd.MM.yyyy'}}</td>
+					<td style="word-break: break-word">{{column.FILENAME }}</td>
+					<td>{{column.NAME_USER }}</td>
+			</ng-template>
+
+		</p-table>
+		<wbr>
+		<p-toolbar>
+			<div class="p-toolbar-group-right">
+				<p-button class="m-1" icon="pi pi-print" [disabled]="!blobPrint" label="Печать"  (onClick)="printBlob()"></p-button>
+			</div>
+		</p-toolbar>
+		<div id="print-section">
+			<div *ngIf="img" class="row m-1 justify-content-center">
+				<div class="bskImgView">
+					<button mat-icon-button color="primary"  type="button" title="Поворот по часовой" (click)="rotate(90)"><mat-icon>redo</mat-icon></button>
+					<button mat-icon-button color="primary"  type="button" title="Поворот против часовой"  (click)="rotate(-90)"><mat-icon>undo</mat-icon></button>
+<!--					<button mat-icon-button color="primary"  type="button" title="Вернуть в исходное состояние"  (click)="reset()"><mat-icon>loop</mat-icon></button>-->
+					<div class="zoom_outer justify-content-center">
+						<div id="zoom" #zoom (mousedown)="mousedown($event)"  (mouseup)="mouseup($event)"  (mousemove)="mousemove($event)" (mousewheel)="mousewheel($event)" >
+							<img [src]="img" alt="zoom" [style.transform]="'rotate(' + (rotationAmount ? rotationAmount : 0) + 'deg)'">
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="row justify-content-center" [innerHTML]="html_d"></div>
+			<div class="row justify-content-center" *ngIf="pdfImage">
+				<pdf-viewer [src]="pdfImage"
+								[original-size]="false">
+				</pdf-viewer>
+			</div>
+		</div>
+
+	</div>
+
+
+
+</p-dialog>

@@ -1,0 +1,88 @@
+.main-statement{
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+/*класс для того чтобы панель стояла на месте */
+.header-statement{
+	position: -webkit-sticky;
+	position: sticky;
+	left: 0%;
+	right: 0%;
+	top:0%;
+	bottom: auto;
+	z-index: 100;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	width: 100%;
+	background-color: hsla(0, 0%, 100%, 1);
+
+}
+.content-statement{
+	position: relative;
+}
+/* Отключает overlay при вызове confirm dialog */
+::ng-deep .p-dialog-mask.p-component-overlay {
+	background-color: rgba(255,11,0,0);
+}
+
+::ng-deep .ui-confirmdialog {
+	z-index:100000 !important
+}
+
+mat-drawer-container{
+	margin-top:10px;
+	height: 90vh;
+ 	background: white;
+}
+.example-spacer {
+	flex: 1 1 auto;
+}
+.mat-drawer {
+	width: 20rem;
+}
+.user-agreement{
+	text-align: justify;
+	height: 250px;
+	line-height: 1;
+	overflow: scroll;
+	padding: 10px;
+}
+.color{
+	color:red;
+}
+::ng-deep .p-multiselect-label{
+	color:red;
+}
+
+::ng-deep .ng-value-container{
+	line-height: 1;
+}
+/*добавить описание */
+.trim-info {
+	max-width: 50px;
+	display: inline-block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	line-height: 15px;
+	position: relative;
+}
+::ng-deep #Table th {
+	overflow: hidden;
+	white-space: break-spaces!important;
+	font-size: 10pt;
+}
+
+td {
+	border-right : 1px solid #dee2e6!important;
+	border-bottom: 1px solid #dee2e6!important;
+}
+::ng-deep.outofstock {
+	td{
+		background: #EFF6FF;
+		color: #1D4ED8;
+	}
+}

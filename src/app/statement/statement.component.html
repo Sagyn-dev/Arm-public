@@ -1,0 +1,163 @@
+<div class="main-statement">
+	<div class="header-statement">
+		<app-page-header
+			[titleName]="headerTitle"
+			(onChange)="onChange($event)"
+			(onChangePoint)="onShowOtd($event)"
+			(onChangeReg)="onShowReg($event)"
+			(onChangeCountPoint)="getRuleCountPoint($event)"
+			(onChangeRegCount)="getRuleRegCount($event)"
+			(onChangeRegRule)="getRuleReg($event)"
+			(onChangeShowSavePhone)="onShowSavePhone($event)"
+			(getPhone)="getPhone($event)"
+		></app-page-header>
+	</div>
+	<div class="content-statement">
+		<mat-drawer-container>
+			<mat-drawer style="z-index: -1" mode="side" opened class="p-1" *ngIf="show">
+				<mat-nav-list>
+					<div class="text-center">
+						<span *ngIf="loading && userInfo?.agreement_User" class="spinner-border spinner-border mt-3"></span>
+					</div>
+					<app-sidebar-left *ngFor="let item of navItem" [item]="item" (onChangeTitle)="changeTitle($event)"></app-sidebar-left>
+
+				</mat-nav-list>
+			</mat-drawer>
+			<div class="content text-center">
+				<router-outlet></router-outlet>
+			</div>
+		</mat-drawer-container>
+	</div>
+
+</div>
+
+
+
+<p-toast></p-toast>
+<p-dialog header='Программный Комплекс "Центр Начисления"' [(visible)]="display">
+	<div class="container-fluid text-center">
+		<label>Абонентский отдел</label>
+		<ng-select
+			class="text-left"
+			name="abon"
+			tabIndex="10"
+			[items]="abonList"
+			appendTo="body"
+			bindLabel="NAME"
+			placeholder="Выберите..."
+			loadingText="Загрузка..."
+			notFoundText="Не найдено"
+			[selectOnTab]="true"
+			[loading]="loadAbonOtdel"
+			[(ngModel)]="selectAbonOtdel"
+
+		>
+		</ng-select>
+		<div class="text-center col-md-12  m-1 p-1">
+			<button mat-raised-button class="text-center w-25 m-1"  (click)="onSelectOtdel()">Подтвердить</button>
+		</div>
+	</div>
+</p-dialog>
+<p-confirmDialog [header]=titleReg icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-dialog [header]="titleReg" [(visible)]="showReg" [style]="{width: '50vw'}" [maximizable]="true"
+			 [draggable]="false" [resizable]="false">
+	<form  #form="ngForm" (ngSubmit)="addressCN(form)">
+		<div class="container-fluid text-center">
+			<action-component  *ngIf="action" (onLoaded)="onLoaded($event)" [action]="action" (onChanged)="onChanged($event)"></action-component>
+			<div class="row">
+				<div style="height: 100px;">
+					<wbr>
+				</div>
+			</div>
+			<div class="row justify-content-center" *ngIf="!loadingAction">
+				<div class="text-center col-md-2  m-1 p-1">
+					<div class="button-container text-center">
+						<div class="spinner-container" *ngIf="loadingSubmit">
+							<mat-spinner diameter="24"></mat-spinner>
+						</div>
+						<button mat-raised-button [disabled]="loadingSubmit || form.invalid" type="submit"  tabIndex="1">Адрес ЦН</button>
+					</div>
+				</div>
+				<div class="text-center col-md-2  m-1 p-1">
+					<div class="button-container text-center">
+						<div class="spinner-container" *ngIf="loadingExter">
+							<mat-spinner diameter="24"></mat-spinner>
+						</div>
+						<button mat-raised-button [disabled]="loadingExter || form.invalid" (click)="onExternal()"  type="button" tabIndex="2">Внешний</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+
+</p-dialog>
+<p-dialog header="Сохранить номер" [(visible)]="showSavePhone" [style]="{width: '50vw'}" [maximizable]="true"
+			 [draggable]="false" [resizable]="false">
+
+		<div class="spinner-container" *ngIf="loadAbonPhone">
+			<mat-spinner diameter="32"></mat-spinner>
+		</div>
+		<div class="container-fluid text-center">
+			<div class="row justify-content-center">
+				<p>Добавить номер телефона {{abonPhone}} для лс {{selectItemAccpu}}?</p>
+			</div>
+			<div class="row justify-content-center">
+				<div class="text-center col-md-2  m-1 p-1">
+					<div class="button-container text-center">
+						<div class="spinner-container" *ngIf="loadSavePhone">
+							<mat-spinner diameter="24"></mat-spinner>
+						</div>
+						<button mat-raised-button [disabled]="loadSavePhone" (click)="onSavePhone(true)"  tabIndex="1">Да</button>
+					</div>
+				</div>
+				<div class="text-center col-md-2  m-1 p-1">
+					<div class="button-container text-center">
+						<button mat-raised-button [disabled]="loadSavePhone" (click)="onSavePhone(false)"   tabIndex="2">Нет</button>
+					</div>
+				</div>
+			</div>
+		</div>
+</p-dialog>
+<p-dialog header="АРМ Выписка" [(visible)]="showAgreement" [style]="{width: '50vw'}" [maximizable]="true"
+			 [draggable]="false" [resizable]="false">
+
+	<div class="container-fluid text-center">
+		<div class="row justify-content-center">
+			<div class="row"><h5>Пользовательское соглашение</h5></div>
+			<div class="row user-agreement">
+				<p>Пользовательское соглашение к программному комплексу "Центр Начисления" Настоящее Пользовательское соглашение является документом, регулирующим правила
+					использования программного комплекса "Центр Начисления" (далее по тексту - ПК ЦН)
+					физическим лицом, являющимся сотрудником индивидуального предпринимателя  или юридического лица (далее - "Принципала"),
+					правомерно обладающего доступом к ПК ЦН на основании соглашения/договора, заключенного с АО "Система "Город" (далее - "Агент").</p>
+				<p> Учетная запись, необходимая для доступа сотрудника Принципала к ПК ЦН, создается
+					 исключительно на основании письма Принципала, содержащего данные, необходимые для создания такой записи.
+					 Учетная запись содержит информацию для идентификации при подключении пользователя к системе, а также для авторизации и учета.
+					 Письмо Принципала о создания учетной записи пользователя является неотъемлемой частью настоящего Пользовательского соглашения.
+					 Условия работы сотрудника Принципала в  ПК ЦН определяются действующим жилищным законодательством, настоящим пользовательским соглашением и инструкциями пользователей ПК ЦН,
+					 размещенными в личном кабинете Принципала на <a href="https://www.orenpay.ru/">сайте</a></p>
+				<p>Сотрудник Принципал размещает в ПК ЦН информацию, получает доступ к информации, размещенной в ПК ЦН, а также получает информацию из ПК ЦН в соответствии с правами доступа,
+					предоставленными ему в ПК ЦН, с соблюдением установленного законодательством Российской Федерации порядка доступа к информации ограниченного доступа, в том числе к персональным данным.
+					Сотрудник Принципала обязан не производить действия, направленные на нарушение информационной безопасности ПК ЦН.</p>
+				 <p>Сотрудники Принципала, получившие доступ к информации содержащейся в ПК ЦН, несут ответственность за соблюдение конфиденциальности
+					в отношении данной информации и настоящим Пользовательским соглашением подтверждают, что эта информация будет использоваться исключительно в рамках действующего законодательства и договора, заключенного с Агентом
+					Настоящим, сотрудник Принципала подтверждает свое понимание того, что использование им ПК ЦН требует постоянного подключения к сети Интернет, и соглашается самостоятельно нести все соответствующие расходы.
+					Все действия, совершенные сотрудником Принципала в ПК ЦН от имени Принципала, считаются произведенными самим Принципалом.
+					Сотрудник Принципала при работе в ПК ЦН, в том числе при совершении действий в нем, несет ответственность в соответствии с законодательством Российской Федерации.</p>
+			</div>
+		</div>
+		<div class="row m-1">
+			<div class="col-9">
+				<mat-checkbox  class="w-100" [(ngModel)]="ck_agreement">ПРИНЯТЬ ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</mat-checkbox>
+			</div>
+			<div class="col-2">
+				<div class="button-container text-center">
+					<div class="spinner-container" *ngIf="loadAgreement">
+						<mat-spinner diameter="24"></mat-spinner>
+					</div>
+					<button mat-raised-button [disabled]="loadAgreement || !ck_agreement" (click)="onAcceptAgreement()"  tabIndex="1">Принять</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</p-dialog>

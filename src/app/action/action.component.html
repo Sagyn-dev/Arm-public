@@ -1,0 +1,100 @@
+<div class="container-fluid">
+<p-confirmPopup></p-confirmPopup>
+	<div class="text-center">
+		<span *ngIf="loading" class="spinner-border spinner-border mt-3"></span>
+	</div>
+	<div class="row" *ngFor="let group of action.groups;let i = index" style="margin-top: 0.25rem;">
+		<div class="col-12">
+		<table style="width: 100%">
+			<tbody>
+				<tr *ngIf="group.name"><th colspan="2">{{group.name}}</th></tr>
+				<tr *ngIf="!group.name && i>0"><th colspan="2" style="height: 0.5rem"><hr class="m-0" /></th></tr>
+				<tr *ngFor="let item of group.parameters; index as i ">
+					<td *ngIf="item.visible" style="width: 20%" class="text-left"><label *ngIf="item.required" class="mr-1">*</label>{{item.name}}<span *ngIf="item.loading && item.type !== 'TLIST' && item.type !== 'TLISTCH'" class="spinner-border spinner-border-sm ml-3"></span></td>
+					<td style="width: 75%" *ngIf="item.type=='TCHECK' && item.visible">
+						<mat-checkbox name="{{item.alias}}" [required]="item.required || !item.enable"  type="checkbox" [(ngModel)]="item.value" (change)="change($event, item)"></mat-checkbox>
+					</td>
+
+					<td style="width: 75%" *ngIf="item.type=='TDATE' && item.visible">
+						<input name="{{item.alias}}" [required]="item.required" [readonly]="!item.enable" type="date" max="9999-12-31" class="form-control"  [(ngModel)]="item.value" (change)="onChange($event, item)"/>
+					</td>
+
+					<td style="width: 75%" *ngIf="item.type=='TCHAR' && item.visible && item.alias == 'phone'">
+						<input name="{{item.alias}}" [required]="item.required" [readonly]="!item.enable" class="form-control" type="tel" mask="0(000)000-00-00" [(ngModel)]="item.value" (change)="onChange($event, item)"/>
+					</td>
+
+					<td style="width: 75%" *ngIf="item.type=='TCHAR' && item.visible && item.alias == 'email'">
+						<input name="{{item.alias}}" [required]="item.required" [readonly]="!item.enable" class="form-control"  type="text" [textMask]="{mask:mask }" placeholder="example@domine.com"  [(ngModel)]="item.value" (change)="onChange($event, item)"/>
+					</td>
+
+					<td style="width: 75%" *ngIf="item.type=='TCHAR' && item.visible && item.alias != 'phone' && item.alias != 'email' && !getNote(item.alias)">
+						<input name="{{item.alias}}" [required]="item.required" [readonly]="!item.enable" class="form-control" [(ngModel)]="item.value" (change)="onChange($event, item)" />
+					</td>
+
+					<td style="width: 75%" *ngIf="item.type=='TCHAR' && item.visible && item.alias != 'phone' && item.alias != 'email' && getNote(item.alias)">
+						<textarea name="{{item.alias}}" [required]="item.required" [readonly]="!item.enable" class="form-control" [(ngModel)]="item.value" (change)="onChange($event, item)" rows="1" cols="30" pInputTextarea></textarea>
+<!--						<input name="{{item.alias}}" [required]="item.required" [readonly]="!item.enable" class="form-control" [(ngModel)]="item.value" (change)="onChange($event, item)" />-->
+					</td>
+
+
+					<td style="width: 75%" *ngIf="item.type=='TNUMBER' && item.visible">
+						<input name="{{item.alias}}" [required]="item.required" [readonly]="!item.enable" type="number" step=any class="form-control" [(ngModel)]="item.value" (change)="change($event, item)"/>
+					</td>
+
+					<td style="width: 75%" *ngIf="item.type=='TLIST' && item.visible">
+						<ng-select name="{{item.alias}}"
+									  [items]="item.values"
+										bindLabel="name"
+									  	dropdownPosition="auto"
+										class = "text-left"
+										[virtualScroll]="true"
+										[(ngModel)]="item.value"
+										[selectOnTab]="true"
+										[loading]="item.loading"
+									   [readonly]="!item.enable"
+										(change)="onChange($event, item)"
+										[required]="item.required"
+						>
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.name">{{item.name}}</span>
+							</ng-template>
+						</ng-select>
+					</td>
+
+					<td style="width: 75%" *ngIf="item.type=='TLISTCH' && item.visible">
+						<ng-select name="{{item.alias}}"
+										[items]="item.values"
+										bindLabel="name"
+									   dropdownPosition="auto"
+										class = "text-left"
+										[multiple]="true"
+										[closeOnSelect]="false"
+										[virtualScroll]="true"
+										[loading]="item.loading"
+									   [readonly]="!item.enable"
+										[(ngModel)]="item.value"
+										(change)="onChange($event, item)"
+										[required]="item.required"
+						>
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.name">{{item.name}}</span>
+							</ng-template>
+						</ng-select>
+					</td>
+
+					<td style="width: 75%" *ngIf="item.type=='TFILE' && item.visible">
+						<app-file-upload  name="{{item.alias}}"  [required]="item.required" (scanChange)="change($event, item)" [(scan)]="item.value" [config]="fileConfig"></app-file-upload>
+					</td>
+
+					<td style="width: 75%" *ngIf="item.type=='TCOMBO' && item.visible">
+						<app-tcombo name="{{item.alias}}" [parameter]="item" (parameter)="change($event,item)"></app-tcombo>
+					</td>
+
+					<td style="width: 5%"><button *ngIf="item.helptext && item.visible" mat-icon-button color="primary" type="button" (click)="info($event,item.helptext)"><i class="pi pi-info-circle"></i> </button></td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+	</div>
+</div>
+

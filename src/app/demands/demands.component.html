@@ -1,0 +1,38 @@
+<app-abonent-info></app-abonent-info>
+<app-form-header [titleName]="headerTitle" (onChange)="onChange($event)"></app-form-header>
+
+
+<div *ngIf="isMobile" class="mobile-template">
+	<p-sidebar [(visible)]="showM" [baseZIndex]="10000">
+		<h2 style="font-weight:lighter; padding-left: 8px;">Ведение заявок</h2>
+		<div class="text-center">
+			<span *ngIf="loading" class="spinner-border spinner-border mt-3"></span>
+		</div>
+		<mat-action-list>
+			<app-sidebar-left class="pdfix" *ngFor="let item of navItems" [item]="item" (onChangeTitle)="changeTitle($event)"></app-sidebar-left>
+		</mat-action-list>
+	</p-sidebar>
+	<mat-drawer-container>
+		<div class="content text-center">
+			<router-outlet></router-outlet>
+		</div>
+	</mat-drawer-container>
+</div>
+
+<div *ngIf="isPc" class="desktop">
+	<mat-drawer-container>
+		<mat-drawer mode="side" opened *ngIf="show">
+			<mat-nav-list>
+				<div class="text-center">
+					<span *ngIf="loading" class="spinner-border spinner-border mt-3"></span>
+				</div>
+				<app-sidebar-left *ngFor="let item of navItems" [item]="item" (onChangeTitle)="changeTitle($event)"></app-sidebar-left>
+
+			</mat-nav-list>
+		</mat-drawer>
+		<div class="content text-center">
+			<router-outlet></router-outlet>
+		</div>
+	</mat-drawer-container>
+
+</div>

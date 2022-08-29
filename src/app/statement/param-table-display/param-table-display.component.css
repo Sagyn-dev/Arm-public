@@ -1,0 +1,60 @@
+td{
+	border:1px solid #000;
+}
+
+tr td:last-child{
+	width:1%;
+	white-space:nowrap;
+}
+th td {
+	text-align: left;
+}
+
+.vertical-th {
+	white-space:break-spaces;
+}
+
+
+#Table td {
+	white-space:break-spaces !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	min-width: 100px;
+	max-width: available;
+	border-right : 1px solid #dee2e6!important;
+	border-bottom: 1px solid #dee2e6!important;
+}
+.outofstock-th th{
+	background: #EFF6FF;
+	color: #1D4ED8;
+}
+#Table th {
+	overflow: hidden;
+	white-space: break-spaces;
+}
+
+.spinner-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.button-container {
+	display: inline-block;
+	position: relative;
+	width: 100%;
+}
+
+.positive {
+	background-color: green;
+}
+
+.negative {
+	color: red !important ;
+}

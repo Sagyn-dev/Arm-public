@@ -1,0 +1,15 @@
+<button (click)="onClose()"  tabindex="-1" type="button" class="p-dialog-header-icon p-dialog-header-close p-link p-ripple float-lg-right" style="margin-top: -10px">
+	<span class="p-dialog-header-close-icon pi pi-times"></span>
+	<span class="p-ink" style="height: 32px; width: 32px; "></span>
+</button>
+<mat-dialog-content>
+	<div class="container" style="text-align: center">
+		<img class="img-fluid" *ngIf="webcamImage" [src]="webcamImage" />
+	</div>
+
+	<div *ngIf="pdf_load" class="pdf-container">
+		<pdf-viewer [src]="pdfImage"
+						[original-size]="false">
+		</pdf-viewer>
+	</div>
+</mat-dialog-content>

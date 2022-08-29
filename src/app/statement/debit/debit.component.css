@@ -1,0 +1,13 @@
+td {
+	border-right : 1px solid #dee2e6!important;
+	border-bottom: 1px solid #dee2e6!important;
+}
+.btn-label {
+	font-size: 10pt;
+	height: 37px;
+	white-space:normal;
+	line-height: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 350px;
+}

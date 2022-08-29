@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Renew Callback</title>
+	</head>
+	<body>
+		<script src="oidc-client.min.js"></script>
+		<script>
+			new Oidc.UserManager({}).signinSilentCallback().catch(function (e) {
+				console.error(e);
+			});
+		</script>
+	</body>
+</html>

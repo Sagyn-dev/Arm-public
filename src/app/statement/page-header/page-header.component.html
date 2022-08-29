@@ -1,0 +1,47 @@
+<div class="w-100">
+	<div class="container-fluid" style="padding-left: 15px">
+		<div class="row" style="margin-left: 5px;font-size: 10pt;">
+			<div class="col-1 p-2 text-left">
+				<label>Лицевой счет</label>
+				<span class="ml-2">
+							<span *ngIf="loading" class="spinner-border spinner-border-sm ml-3"></span>
+							<input style="font-size: 11pt; height: 28px;" #accountNum type="tel" mask="0000000" (keydown.enter)="searchAccount(accountNum.value)" [ngModel]="accountInfo?.accpu"  class="form-control" tabIndex="1">
+				</span>
+			</div>
+			<div class="col-3 p-2">
+				<span class="d-block">Абонент: <b style="font-weight: 500;">{{accountInfo?.fio}}</b></span>
+				<span class="d-block">Адрес: <b style="font-weight: 500;">{{accountInfo?.address}}</b></span>
+				<span class="d-block">Тип ЛС: <b style="font-weight: 500;" *ngIf="accountInfo?.status">{{ accountInfo?.type}} ({{accountInfo?.status}})</b> <b style="font-weight: 500;" *ngIf="!accountInfo?.status">{{ accountInfo?.type}}</b></span>
+			</div>
+			<div class="col-3 text-right mt-3">
+				<div class="row mt-2 bt-header">
+					<div class="mr-1"><app-search-address></app-search-address></div>
+					<div class="mr-1"><app-queue></app-queue></div>
+					<div class="mr-1" *ngIf="flagRuleForm"><button mat-raised-button  title="Сменить Абонентский отдел" (click)="onShowOtdel()"><mat-icon> format_shapes</mat-icon></button></div>
+					<div class="mr-1" *ngIf="flagRulRegCount || flagRulCountPoint || flagRulReg"><button mat-raised-button (click)="onShowReg()"  title="Регистрация обращений абонентов" ><mat-icon> phone</mat-icon></button></div>
+					<div><button *ngIf="phone" mat-raised-button (click)="onShowSavePhone()"  title="Сохранить номер" ><mat-icon>save</mat-icon></button></div>
+				</div>
+			</div>
+
+			<div class="col-5 text-right mt-3 p-0" (mousewheel)="scrollWheel($event)" (mouseleave)="unBlockContent()" >
+				<div class="spinner-container" *ngIf="loadFastMenu">
+					<mat-spinner diameter="24"></mat-spinner>
+				</div>
+				<div class="container mt-1 d-inline-flex">
+					<div  #widgetsContent class="info-widget">
+						<span *ngFor="let item of fastMenu">
+							<button class="ml-1 mt-1 mb-1 mr-1" style="min-width: 50px;" mat-raised-button  [title]="item.name" (click)="onSelectRoute(item)">{{item.alias}}</button>
+						</span>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+<mat-toolbar class="mat-toolbar">
+	<button mat-icon-button class="mr-2" (click)="showHide()">
+		<mat-icon>menu</mat-icon>
+	</button>
+	<span style="font-size: 12pt">{{titleName}}</span>
+</mat-toolbar>

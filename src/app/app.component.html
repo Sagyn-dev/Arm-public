@@ -1,0 +1,62 @@
+﻿<div [class.header]="isPc" [class.header-mobile]="isMobile" >
+	<header>
+	<nav class="navbar navbar-expand-md navbar-toggleable-md navbar-light bg-white border-bottom box-shadow" >
+		<div class="container-fluid nav">
+			<ul class="navbar-nav mr-auto"><li><a class="navbar-brand" routerLink='/'><img style="height: 32px;margin-left:20px;" src="assets/logo-index.png" alt='ОА "Система "Город"'/></a></li></ul>
+			<button class="navbar-toggler hidden-sm-up" type="button"  (click)="isNavbarCollapsed = !isNavbarCollapsed" data-target="#navbarsDefault" aria-controls="navbarsDefault" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="navbarsDefault">
+				<span *ngIf="(isAuthenticated | async) && loadmenu" class="spinner-border"></span>
+				<ul class="navbar-nav mr-auto" *ngIf="(isAuthenticated | async) && !loadmenu">
+					<li class="text-center" *ngFor="let arm of arms">
+						<a class="nav-item nav-link text-dark" (click)="setApplication(arm)" [routerLink]="'/' + arm.route">{{arm.name}}</a>
+					</li>
+				</ul>
+				<ul class="navbar-nav text-right"><app-login-menu></app-login-menu></ul>
+			</div>
+		</div>
+	</nav>
+</header>
+</div>
+
+<div *ngIf="isPc" id="content" [ngStyle]="blockContent ? {'overflow':'hidden'}:{'overflow':'auto'}" >
+	<main>
+		<router-outlet></router-outlet>
+	</main>
+</div>
+
+<div *ngIf="isPc" id="footer">
+	<footer>
+		<hr style="width: 50%; margin: 0 25% 0 25%;" />
+		<div class="footer-info">
+			<span>Имя базы данных:</span>
+			<span class="pl-1" *ngIf="prod">Рабочая БД</span>
+			<span class="pl-1" *ngIf="!(prod)">Тестовая БД</span>
+			<span class="pl-2" *ngIf="selectAbonOtdel">Абонентский отдел: {{selectAbonOtdel}}</span>
+			<span class="pl-2" *ngIf="selectWnd">: {{selectWnd}} </span>
+		</div>
+	</footer>
+</div>
+
+
+<div *ngIf="isMobile">
+	<main>
+		<router-outlet></router-outlet>
+	</main>
+	<footer>
+		<hr style="width: 50%; margin: 0 25% 0 25%;" />
+		<div class="footer-info">
+			<span>Имя базы данных:</span>
+			<span class="pl-1" *ngIf="prod">Рабочая БД</span>
+			<span class="pl-1" *ngIf="!(prod)">Тестовая БД</span>
+			<span class="pl-2" *ngIf="selectAbonOtdel">Абонентский отдел: {{selectAbonOtdel}}</span>
+			<span class="pl-2" *ngIf="selectWnd">: {{selectWnd}} </span>
+		</div>
+	</footer>
+</div>
+
+
+
+
+

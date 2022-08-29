@@ -1,0 +1,92 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+/test
+# Only exists if Bazel was run
+/bazel-out
+
+# dependencies
+/node_modules
+
+# profiling files
+chrome-profiler-events.json
+speed-measure-plugin.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+/dev/
+/dist/
+/src/styles.css
+/src/styles.css.map
+/dev/web.config
+/.angular/cache/
+/src/app/statement/return-cn/return-cn.component.css
+/src/app/administrator/account-manager/account-manager.component.css.map
+/src/app/statement/adjust/adjust.component.css
+/src/app/statement/adjust/adjust.component.css.map
+/src/app/app.component.css.map
+/src/app/statement/arch-spr-no-dept/arch-spr-no-dept.component.css
+/src/app/statement/arch-spr-no-dept/arch-spr-no-dept.component.css.map
+/src/app/api-authorization/change-password/change-password.component.css
+/src/app/api-authorization/change-password/change-password.component.css.map
+/src/app/statement/copy-accpu-vvp/copy-accpu-vvp.component.css
+/src/app/statement/copy-accpu-vvp/copy-accpu-vvp.component.css.map
+/src/app/statement/korrekt/korrekt.component.css
+/src/app/statement/korrekt/korrekt.component.css.map
+/src/app/statement/page-header/page-header.component.css
+/src/app/statement/page-header/page-header.component.css.map
+/src/app/statement/pay-cn/pay-cn.component.css
+/src/app/statement/pay-cn/pay-cn.component.css.map
+/src/app/statement/qr-pay/qr-pay.component.css
+/src/app/statement/qr-pay/qr-pay.component.css.map
+/src/app/statement/reestr-non-cash/reestr-non-cash.component.css
+/src/app/statement/reestr-non-cash/reestr-non-cash.component.css.map
+/src/app/statement/return-cn/return-cn.component.css.map
+/src/app/statement/spr-subsid/spr-subsid.component.css
+/src/app/statement/spr-subsid/spr-subsid.component.css.map
+/src/app/statement/suo/suo.component.css
+/src/app/statement/suo/suo.component.css.map
+/src/app/statement/table-data/table-data.component.css
+/src/app/statement/table-data/table-data.component.css.map
+/src/app/tcombo/tcombo.component.css
+/src/app/tcombo/tcombo.component.css.map
+/src/app/demands/ipu-enter/ipu-enter.component.css
+/src/app/demands/ipu-enter/ipu-enter.component.css.map
+/src/app/statement/task-peny/task-peny.component.css
+/src/app/administrator/edit-suo/edit-suo.component.css.map
+/src/app/statement/statement.component.css.map
+/src/app/filter-select/filter-select.component.css
+/src/app/filter-select/filter-select.component.css.map
+/src/app/statement/statement.component.css
+/e2e/src/app.po.ts

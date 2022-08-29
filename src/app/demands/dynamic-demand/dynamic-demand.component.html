@@ -1,0 +1,12 @@
+<p-toast [autoZIndex]="true" position="center"></p-toast>
+<form  #form="ngForm" (ngSubmit)="onExecute(form)">
+	<div class="col-12 w-100">
+		<action-component  *ngIf="action" (onLoaded)="onLoaded($event)" [action]="action" (onChanged)="onChanged($event)"></action-component>
+	</div>
+	<div class="row col-11 text-center m-3" *ngIf="!loadingAction && action">
+		<button mat-raised-button color="primary" type="submit" [disabled]="form.form.invalid || loadingSubmit">
+			<span *ngIf="loadingSubmit" class="spinner-border spinner-border-sm mr-1"></span>
+			Отправить
+		</button>
+	</div>
+</form>

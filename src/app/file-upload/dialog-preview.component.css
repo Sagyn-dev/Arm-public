@@ -1,0 +1,11 @@
+img {
+	width: 480px;
+	height: 640px;
+}
+@media (min-width: 640px) and (orientation: landscape)
+{
+	img {
+		width: 640px;
+		height: 480px;
+	}
+}

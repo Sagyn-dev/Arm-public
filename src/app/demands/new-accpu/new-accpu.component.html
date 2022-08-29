@@ -1,0 +1,487 @@
+<p-toast position="center"></p-toast>
+<p-confirmPopup></p-confirmPopup>
+<form  #form="ngForm" (ngSubmit)="onExecute(form)">
+	<div class="col-12 w-100">
+		<div class="row mt-2">
+			<div class="col-12">
+					<div class="row">
+						<div class="col-11 mt-1 mb-1 text-left"><mat-label class="font-weight-bold">ПРАВОУСТАНАВЛИВАЮЩИЙ ДОКУМЕНТ</mat-label></div>
+					</div>
+
+					<div class="row">
+						<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Тип правоустанавливающего документа</mat-label></div>
+						<div class="col-8 mt-1 mb-1">
+							<ng-select
+								name="typeDoc"
+								class="text-left"
+								tabIndex="1"
+								appendTo="body"
+								[items]="typeDoc"
+								bindLabel="NAME"
+								notFoundText="Не найдено"
+								placeholder="Выберите документ"
+								required
+								loadingText="Загрузка..."
+								[searchFn]="searchNAME"
+								[selectOnTab]="true"
+								[loading]="loadingDoc"
+								[(ngModel)]="selectDoc"
+								(change)="onSelectDoc(selectDoc)"
+							>
+							</ng-select>
+						</div>
+						<div class="informer">
+							<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.type_title_doc)"><i class="pi pi-info-circle"></i> </button>
+						</div>
+					</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Серия правоустанавливающего документа</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="serial-doc" type="text"  tabIndex="2" class="form-control" [(ngModel)]="serial_doc"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.serial_doc)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Номер правоустанавливающего документа</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="serial-doc" type="text"  tabIndex="3" class="form-control" [(ngModel)]="num_doc"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.num_doc)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Номер записи регистрации</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="num-reg" type="text"  tabIndex="4" class="form-control" [(ngModel)]="num_reg"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.num_rec_reg)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Дата выдачи правоустанавливающего документа</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input type="date" name="data-v" (change)="change()" required tabIndex="5"  class="form-control" [(ngModel)]="data_v" max="9999-12-12" />
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.data_doc_issue)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Учреждение, выдавшее правоустанавливающий документ</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="inst"
+							class="text-left"
+							tabIndex="6"
+							appendTo="body"
+							[items]="inst"
+							bindLabel="NAME"
+							notFoundText="Не найдено"
+							placeholder="Выберите..."
+							required
+							loadingText="Загрузка..."
+							[searchFn]="searchNAME"
+							[selectOnTab]="true"
+							[loading]="loadingInst"
+							[(ngModel)]="selectInst"
+							(change)="onSelectInst(selectInst)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.org_doc)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><label class="d-inline-block">* Сканкопия правоустанавливающего документа</label></div>
+					<div class="col-8 mt-1 mb-1"><app-file-upload (change)="change()" name="scan"  [required]="true" tabIndex="7" [config]="fileConfig" [(scan)]="scan_id"></app-file-upload></div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.scan_copy_doc)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><label class="d-inline-block">* Сканкопия документа-основания перехода права</label></div>
+					<div class="col-8 mt-1 mb-1"><app-file-upload (change)="change()" name="scan_d"  [required]="true" tabIndex="7" [config]="fileConfig" [(scan)]="scan_d"></app-file-upload></div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.scan_d)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-11"><hr></div>
+				</div>
+
+
+				<div class="row">
+					<div class="col-11 mt-1 mb-1 text-left"><mat-label class="font-weight-bold">АДРЕС ПОМЕЩЕНИЯ</mat-label></div>
+				</div>
+				<div class="row text-left">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Тип населенного пункта</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="cityType"
+							class="text-left"
+							tabIndex="8"
+							appendTo="body"
+							[items]="cityType"
+							[clearable]="false"
+							bindLabel="name"
+							placeholder="Выберите тип населенного пункта"
+							notFoundText="Не найдено"
+							required
+							loadingText="Загрузка..."
+							[selectOnTab]="true"
+							[loading]="loadingCityType"
+							[(ngModel)]="selectedCityTypeID"
+							(change)="onSelectCityType(selectedCityTypeID)">
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.cityType)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Населенный пункт</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="city"
+							class="text-left"
+							tabIndex="9"
+							appendTo="body"
+							[items]="city"
+							bindLabel="name"
+							notFoundText="Не найдено"
+							placeholder="Выберите населенный пункт"
+							required
+							loadingText="Загрузка..."
+							[searchFn]="searchItem"
+							[selectOnTab]="true"
+							[loading]="loadingCity"
+							[(ngModel)]="selectedCityID"
+							(change)="onSelectCity(selectedCityID)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.city)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left">	<mat-label>* Тип улицы</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="streetType"
+							class="text-left"
+							tabIndex="10"
+							appendTo="body"
+							placeholder="Выберите тип улицы"
+							[items]="streetType"
+							[clearable]="false"
+							bindLabel="name"
+							bindValue="id"
+							notFoundText="Не найдено"
+							required
+							loadingText="Загрузка..."
+							[searchFn]="searchItem"
+							[selectOnTab]="true"
+							[loading]="loadingStreetType"
+							[(ngModel)]="selectedStreetTypeID"
+							(change)="onSelectStreetType(selectedCityID,selectedStreetTypeID)">
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.typeStreet)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Улица</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="street"
+							class="text-left"
+							tabIndex="11"
+							appendTo="body"
+							[items]="street"
+							bindLabel="name"
+							placeholder="Выберите улицу"
+							dropdownPosition="auto"
+							required
+							notFoundText="Не найдено"
+							loadingText="Загрузка..."
+							[searchFn]="searchItem"
+							[selectOnTab]="true"
+							[loading]="loadingStreet"
+							[(ngModel)]="selectedStreetID"
+							(change)="onSelectHouse(selectedStreetID)" >
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.street)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Дом</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="house"
+							class="text-left"
+							tabIndex="12"
+							appendTo="body"
+							[items]="house"
+							placeholder="Выберите дом"
+							bindLabel="house"
+							dropdownPosition = "bottom"
+							required
+							notFoundText="Не найдено"
+							loadingText="Загрузка..."
+							[searchFn]="searchItemHouse"
+							[selectOnTab]="true"
+							[loading]="loadingHouse"
+							[(ngModel)]="selectedHouseID"
+							(change)="onSelectFlat(selectedHouseID)">
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.house)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left">
+						<mat-label>* Квартира</mat-label>
+					</div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							placeholder="Выберите квартиру"
+							name="flat"
+							class="text-left"
+							tabIndex="13"
+							appendTo="body"
+							[items]="flat"
+							required
+							bindLabel="flat"
+							dropdownPosition = "bottom"
+							notFoundText="Не найдено"
+							loadingText="Загрузка..."
+							[searchFn]="searchItemFlat"
+							[selectOnTab]="true"
+							[loading]="loadingFlat"
+							[(ngModel)]="selectedFlatID"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.flat)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-11"><hr></div>
+				</div>
+
+				<div class="row">
+					<div class="col-11 mt-1 mb-1 text-left"><mat-label class="font-weight-bold">ПАСПОРТ</mat-label></div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Паспорт иного государства</mat-label></div>
+					<div class="col-8 mt-1 mb-1 text-left">
+						<mat-checkbox name="passport_another_country"  [(ngModel)]="passport_another_country"></mat-checkbox>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_another_country)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Серия паспорта</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="serial-ps" type="tel"  tabIndex="14" class="form-control" [(ngModel)]="s_pasp"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_seria)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Номера паспорта</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="numb-ps" type="tel"  tabIndex="15" class="form-control" [(ngModel)]="n_pasp"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_num)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Дата выдачи паспорта</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input type="date" name="datav-ps" (change)="change()" required tabIndex="16"  class="form-control" [(ngModel)]="datav_ps" max="9999-12-12" />
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_data)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Кем выдан паспорт (код подразделения)</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="kod_podr"
+							class="text-left"
+							tabIndex="17"
+							appendTo="body"
+							[items]="kod_podr"
+							[virtualScroll]="true"
+							bindLabel="NAME"
+							notFoundText="Не найдено"
+							placeholder="Выберите..."
+							required
+							loadingText="Загрузка..."
+							[searchFn]="searchNAME"
+							[selectOnTab]="true"
+							[loading]="loadingKod"
+							[(ngModel)]="selectKodPodr"
+							(change)="onSelectKod(selectKodPodr)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_kod)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><label class="d-inline-block">* Сканкопия паспорта</label></div>
+					<div class="col-8 mt-1 mb-1"><app-file-upload (change)="change()" name="scan_ps"  [required]="true" tabIndex="18" [config]="fileConfig" [(scan)]="sc_pasp"></app-file-upload></div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.passport_scan)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-11"><hr></div>
+				</div>
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Ф.И.О. собственника</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="fio_ab" type="text" required tabIndex="19" class="form-control" [(ngModel)]="fio_ab"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.fio_own)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Общая площадь жилого (нежилого) помещения</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" name="s-room" type="number" required tabIndex="20" class="form-control" [(ngModel)]="s_room"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.s_live)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Форма собственности</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<ng-select
+							name="forma-sobs"
+							class="text-left"
+							tabIndex="21"
+							appendTo="body"
+							[items]="forma_sobst"
+							bindLabel="NAME"
+							notFoundText="Не найдено"
+							placeholder="Выберите..."
+							required
+							loadingText="Загрузка..."
+							[searchFn]="searchNAME"
+							[selectOnTab]="true"
+							[loading]="loadingForms"
+							[(ngModel)]="selectForms"
+							(change)="onSelectFormSobst(selectForms)"
+						>
+						</ng-select>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.type_own)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Общая совместная собственность</mat-label></div>
+					<div class="col-8 mt-1 mb-1 text-left">
+						<mat-checkbox name="flag-sobst" (change)="onChangeFlagSobst(flagSobst)"  [(ngModel)]="flagSobst"></mat-checkbox>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.chk_share_onw)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>* Размер доли в праве общей собственности</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input (change)="change()" [disabled]="flagSobst" name="s_dolya" type="text" required tabIndex="22" class="form-control" [(ngModel)]="s_dolya"/>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.dolya_share_own)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><mat-label>Сканкопия заявления с подписью</mat-label></div>
+					<div class="col-8 mt-1 mb-1">
+						<app-file-upload (change)="change()" name="statement-scan"  tabIndex="23" [config]="fileConfig" [(scan)]="statement_scan"></app-file-upload>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.scan_statement)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-3 mt-1 mb-1 text-left"><label class="d-inline-block">* Номер телефона</label></div>
+					<div class="col-8 mt-1 mb-1"><input (change)="change()" tabIndex="24" name="phone" mask="0(000)000-00-00" required type="tel" class="form-control" [(ngModel)]="tel"/></div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.phone)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row" [formGroup]="registerForm">
+					<div class="col-3 mt-1 mb-1 text-left"><label class="d-inline-block">Email-адрес</label></div>
+					<div class="col-8 mt-1 mb-1">
+						<input type="email" (change)="change()" formControlName="email" placeholder="example@domine.com" required tabIndex="25" class="form-control"/>
+						<div *ngIf="f.email.errors" [ngClass]="{ 'is-invalid': f.email.errors }" class="invalid-feedback">
+							<div *ngIf="f.email.errors.email">Введен некорректный Email-адрес</div>
+						</div>
+					</div>
+					<div class="informer">
+						<button mat-icon-button color="primary" type="button" (click)="info($event,infoMessage.email)"><i class="pi pi-info-circle"></i> </button>
+					</div>
+				</div>
+
+				<div class="row col-xl-12">
+					<button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loadingSubmit">
+						<span *ngIf="loadingSubmit" class="spinner-border spinner-border-sm mr-1"></span>
+						Отправить
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

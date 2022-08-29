@@ -1,0 +1,51 @@
+::ng-deep .p-dialog-bottom{
+	z-index: 103!important;
+}
+.spinner-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.button-container {
+	display: inline-block;
+	position: relative;
+	width: 100%;
+}
+.outofstock {
+	font-weight: 600;
+}
+.color{
+	color:red;
+}
+td {
+	border-right : 1px solid #dee2e6!important;
+	border-bottom: 1px solid #dee2e6!important;
+}
+
+.zoom_outer{
+	background: #eceff1;
+	height: 600px;
+	width: 800px;
+	overflow: hidden;
+}
+#zoom {
+	width: 800px;
+	height: 600px;
+	transform-origin: 0px 0px;
+	transform: scale(1) translate(0px, 0px);
+	cursor: grab;
+}
+div#zoom > img {
+	width: 100%;
+	height: auto;
+}
+.p-datatable-resizable .p-datatable-tbody>tr>td{
+	white-space: break-spaces!important;
+}

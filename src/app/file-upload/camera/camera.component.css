@@ -1,0 +1,43 @@
+.off {
+	color:silver;
+}
+.on {
+	color:#3f51b5;
+}
+img {
+	width: 480px;
+	height: 640px;
+}
+@media (min-width: 640px) and (orientation: landscape)
+{
+	img {
+		width: 640px;
+		height: 480px;
+	}
+
+	.on-camera{
+		width: 640px;
+		height: 480px;
+	}
+}
+@media (orientation: portrait) {
+	.on-camera{
+		height: 640px;
+		width: 480px;
+	}
+}
+
+.on-camera{
+	width: 640px;
+	height: 480px;
+}
+
+.off-camera{
+	width: 0px;
+	height: 0px;
+}
+
+.off-camera video{
+	height: 0;
+	width: 0;
+}

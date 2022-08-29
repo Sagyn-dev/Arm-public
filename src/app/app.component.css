@@ -1,0 +1,92 @@
+.outofstock td{
+	background: #EFF6FF;
+	color: #1D4ED8;
+}
+.navbar-collapse{
+	z-index: 101;
+	background: white;
+}
+
+::ng-deep .ui-confirmdialog {
+	z-index:100000 !important
+}
+
+.footer-info{
+	text-align: center;
+}
+
+#header-mobile
+{
+	z-index: 10;
+	position: relative;
+	height: auto;
+	background: white;
+}
+#content-mobile{
+	position:relative;
+}
+#footer-mobile{
+	position: relative;
+}
+:host ::ng-deep .p-toast-top-right {
+	right: 20px;
+	top: 200px!important;
+	z-index: 5;
+}
+@media only screen and (max-device-width: 480px) {
+	.header {
+		width: 100%;
+		z-index:2;
+	}
+}
+.nav img{
+	margin-left:-10px;
+}
+.nav #navbarsDefault {
+	margin-left: -10px;
+}
+/* Скрывает стрелки в поле ввода */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+::ng-deep .ng-value-container{
+	line-height: 1;
+}
+
+/*Высота выпадающего списка */
+::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items {
+	max-height: 160px!important;
+}
+/*ширина ячейки*/
+.min-max-width{
+	min-width: 100px;
+	max-width: 300px;
+}
+/*ширина ячейки заголовков*/
+.min-max-width-header{
+	min-width: 100px!important;
+	max-width: 300px!important;
+}
+/*тулбар */
+.mat-toolbar {
+	min-height: 50px !important;
+	height: 50px !important;
+}
+
+.mat-toolbar-row {
+	min-height: 50px !important;
+	height: 50px !important;
+}
+.mat-toolbar-single-row{
+	min-height: 50px !important;
+	height: 50px !important;
+}

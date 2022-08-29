@@ -1,0 +1,217 @@
+<p-toast></p-toast>
+<div class="col-12">
+	<div class="row m-1 text-left justify-content-center">
+		<div class="col-md-5">
+
+				<div class="row">
+					<div class="col-4"><label class="d-inline-block">Лицевой счет</label></div>
+					<div class="col-6"><input 	tabIndex="1" type="text" class="form-control" [(ngModel)]="selectItemAccpu"  disabled/></div>
+				</div>
+				<div class="row">
+					<div class="col-4"><label class="d-inline-block">Дата операции </label></div>
+					<div class="col-6"><input 	tabIndex="2" type="date" class="form-control" [(ngModel)]="dateOp" max="9999-12-12"/></div>
+				</div>
+				<div class="row">
+					<div class="col-4"><label class="d-inline-block">Дата бух.выписки</label></div>
+					<div class="col-6"><input  tabIndex="3" type="date" class="form-control" [(ngModel)]="dateBux" max="9999-12-12"/></div>
+				</div>
+
+				<div class="row">
+					<div class="col-4"><label class="d-inline-block">Обоснование</label></div>
+					<div class="col-6"><input  tabIndex="4" type="text" class="form-control" [(ngModel)]="note" /></div>
+				</div>
+
+				<div class="row">
+					<div class="col-4"><label class="d-inline-block">Реальная дата платежа</label></div>
+					<div class="col-6"><input  tabIndex="5" type="date" class="form-control" [(ngModel)]="dateReal" max="9999-12-12"/></div>
+				</div>
+
+				<div class="row">
+					<div class="col-4"><label class="d-inline-block">Флаг учета</label></div>
+					<div class="col-6">
+						<ng-select
+							tabIndex="6"
+							[items]="flagCalc"
+							bindLabel="NAME"
+							bindValue="ID"
+							placeholder="Выберите..."
+							loadingText="Загрузка..."
+							notFoundText="Не найдено"
+							class="text-left"
+							[selectOnTab]="true"
+							[loading]="loadingFlagcalc"
+							[(ngModel)]="flag"
+						></ng-select>
+					</div>
+				</div>
+
+
+			<div class="row m-1 text-left justify-content-center">
+				<div class="button-container text-center">
+					<div class="spinner-container" *ngIf="loadingTable">
+						<mat-spinner diameter="24"></mat-spinner>
+					</div>
+					<button mat-raised-button [disabled]="loadingTable" (click)="onSearch()"  tabIndex="7">Поиск</button>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="col-md-7">
+			<div class="row">
+				<div class="col-12">
+					<ng-select
+						tabIndex="1"
+						name="operation"
+						[items]="type_action"
+						bindLabel="name"
+						placeholder="Выберите действие"
+						loadingText="Загрузка..."
+						notFoundText="Не найдено"
+						class="text-left"
+						[selectOnTab]="true"
+						[loading]="loadingAction"
+						(change)="onSelectAction($event)"
+						[(ngModel)]="action_id">
+					</ng-select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<action-component *ngIf="action" (onLoaded)="onLoaded($event)" [action]="action"></action-component>
+				</div>
+			</div>
+			<div class="row m-1">
+				<div class="col-2">
+					<div *ngIf="b_exec" class="button-container text-center mt-1">
+						<div class="spinner-container" *ngIf="loadingExp">
+							<mat-spinner diameter="24"></mat-spinner>
+						</div>
+						<button mat-raised-button  [disabled]="loadingExp" color="primary" (click)="onExecute(1)"  tabIndex="8">{{b_name}}</button>
+					</div>
+				</div>
+				<div class="col-2">
+					<div *ngIf="b_update" class="button-container text-center mt-1">
+						<div class="spinner-container" *ngIf="loadingExp">
+							<mat-spinner diameter="24"></mat-spinner>
+						</div>
+						<button mat-raised-button  [disabled]="loadingExp" (click)="onExecute(2)"  tabIndex="9">Изменить</button>
+					</div>
+				</div>
+				<div class="col-2">
+					<div *ngIf="b_delete" class="button-container text-center mt-1">
+						<div class="spinner-container" *ngIf="loadingExp">
+							<mat-spinner diameter="24"></mat-spinner>
+						</div>
+						<button mat-raised-button  [disabled]="loadingExp" (click)="onExecute(3)"  tabIndex="10">Удалить</button>
+					</div>
+				</div>
+				<div class="col-4">
+
+				</div>
+				<div class="col-2">
+					<div class="button-container text-center mt-1">
+						<div class="spinner-container" *ngIf="false">
+							<mat-spinner diameter="24"></mat-spinner>
+						</div>
+						<button mat-raised-button (click)="onRefresh()"  tabIndex="11">Обновить</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<wbr>
+
+	<div class="table-content mr-3 ml-3" *ngIf="data_table">
+		<p-table #dt2
+					[reorderableColumns]="true"
+					[resizableColumns]="true"
+					columnResizeMode="expand"
+					[scrollable]="true" scrollHeight="240px"
+					[value]="data_table"
+					dataKey="id"
+					[columns]="fields"
+					[showCurrentPageReport]="true"
+					[rows]="5"
+					[rowsPerPageOptions]="[5,50,100,150]"
+					[loading]="loadingTable"
+					sortMode="multiple"
+					styleClass="p-datatable-sm"
+					[paginator]="true"
+					currentPageReportTemplate="Отображено записей с {first} по {last} из {totalRecords} записей"
+					id="Table"
+					[autoLayout]="true"
+					(onFilter)="onFilter()"
+		>
+
+			<ng-template pTemplate="colgroup" let-columns>
+				<colgroup>
+					<col *ngFor="let col of columns" [style.width]="col.width">
+				</colgroup>
+			</ng-template>
+
+			<ng-template pTemplate="header" let-columns style="margin-right: 0px;width: 100%">
+
+				<tr *ngIf="haveGroup">
+					<th class="border" pResizableColumn *ngFor="let group of groups" [colSpan]="group.fields.length" style="word-wrap: break-word">{{group?.title}}</th>
+				</tr>
+
+				<tr>
+					<th *ngFor="let field of columns"  class="text-center" style="font-weight: 300;" [pSortableColumn]="field.field" pReorderableColumn pResizableColumn>
+						{{field.header }}<p-sortIcon [field]="field.field"></p-sortIcon>
+					</th>
+				</tr>
+
+				<tr>
+					<th *ngFor="let header of columns" class="text-center">
+						<p-columnFilter *ngIf="header.type =='DateTime'" display="menu"  type="date" [matchMode]="'Равно'" [field]="header.field" [matchModeOptions]="matchModeOptions"></p-columnFilter>
+						<p-columnFilter *ngIf="header.type !=='DateTime'&& header.type !=='String' " [field]="header.field" display="menu" placeholder="Введите значение"></p-columnFilter>
+
+						<p-columnFilter *ngIf="header.type =='String'" [field]="header.field" [showMenu]="false" matchMode="in">
+							<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+								<p-multiSelect class="color" [ngModel]="value" [options]="getShortName(header.field)" appendTo="body" placeholder="Все" selectedItemsLabel="Выбрано {totalRecords}"
+													(onChange)="filter($event.value)" [optionValue]="'name'" [optionLabel]="'name'">
+									<ng-template let-option pTemplate="item">
+										<div class="p-multiselect-representative-option">
+											<span class="p-ml-1">{{option.name}}</span>
+										</div>
+									</ng-template>
+								</p-multiSelect>
+							</ng-template>
+						</p-columnFilter>
+
+					</th>
+				</tr>
+
+			</ng-template>
+
+			<ng-template pTemplate="body" let-rowData let-column let-index="rowIndex">
+				<tr [pReorderableRow]="index" [pSelectableRow]="column" (dblclick)="selectRecord(column)" [ngClass]="{'outofstock': column === select_record}">
+
+					<ng-container *ngFor="let col of groups">
+						<ng-container *ngFor="let field of col.fields">
+
+							<td *ngIf="field.field == 'DATEOP' && field.field !== 'ENTRIED' && field.type == 'DateTime' && field.field !=='IDR'"   >{{ rowData[field.field]| date:'dd.MM.yyyy HH:mm:ss'}}</td>
+							<td *ngIf="field.field == 'ENTRIED' && field.field !== 'DATEOP' && field.type == 'DateTime' && field.field !=='IDR'"   >{{ rowData[field.field]| date:'dd.MM.yyyy HH:mm:ss'}}</td>
+						   <td *ngIf="field.field == 'DATEOP' && field.field !== 'ENTRIED' && field.type !== 'DateTime' && field.field !=='IDR'"  >{{ rowData[field.field]}}</td>
+							<td *ngIf="field.field == 'ENTRIED' && field.field !== 'DATEOP' && field.type !== 'DateTime' && field.field !=='IDR'"  >{{ rowData[field.field]}}</td>
+
+							<td *ngIf="field.field !== 'DATEOP' && field.field !== 'ENTRIED' && field.field !=='IDR'" >{{ rowData[field.field]| armDate}}</td>
+						</ng-container>
+					</ng-container>
+
+				</tr>
+			</ng-template>
+
+			<ng-template pTemplate="footer" let-columns>
+				<tr >
+						<ng-container *ngFor="let field of columns">
+							<th style="background-color: #f4f4f4;font-weight: 700; border: 1px solid #afb6be" class="ui-resizable-column"  *ngIf="field.totalSum && loadTable && field.field !=='IDR'">{{getSum(field) | number:'1.2'}}</th>
+							<th style="background-color: #f4f4f4;font-weight: 700; border: 1px solid #afb6be" class="ui-resizable-column"  *ngIf="!field.totalSum && loadTable && field.field !=='IDR'">-</th>
+						</ng-container>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+</div>

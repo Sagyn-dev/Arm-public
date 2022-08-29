@@ -1,0 +1,22 @@
+<div>
+    <ul class="navbar-nav ml-auto" *ngIf="isAuthenticated | async">
+        <li class="nav-item text-center">
+            <div class="nav-link text-dark" style="cursor:pointer" [matMenuTriggerFor]="menu">{{ userName | async }}</div>
+        </li>
+			 <mat-menu #menu="matMenu">
+				 <span>
+					 <a  class="nav-link text-dark " [routerLink]='["/authentication/logout"]' [state]='{ local: true }' title="Выйти">Выйти</a>
+				 </span>
+				 <span>
+					 <a class="nav-link text-dark" [routerLink]='["/authentication/changepassword"]'  [state]='{ local: true }' title="Сменить пароль">Сменить пароль</a>
+				 </span>
+			 </mat-menu>
+
+    </ul>
+    <ul class="navbar-nav ml-auto" *ngIf="!(isAuthenticated | async)">
+        <li class="nav-item text-center">
+            <a class="nav-link text-dark" [routerLink]='["/authentication/login"]'>Войти</a>
+        </li>
+    </ul>
+</div>
+

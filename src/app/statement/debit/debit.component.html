@@ -1,0 +1,266 @@
+<p-toast></p-toast>
+<div class="content">
+	<div class="row justify-content-center col-11">
+			<div class="col-8 pt-1">
+				<div class="row">
+					<div class="col-4"><label>Лицевой счет</label></div>
+					<div class="col-7">
+						<ng-select
+							tabIndex="1"
+							[items]="accountFlataccs"
+							bindLabel="name"
+							bindValue="id"
+							placeholder="Выберите..."
+							loadingText="Загрузка..."
+							notFoundText="Не найдено"
+							class="text-left"
+							[selectOnTab]="true"
+							[loading]="loading"
+							[(ngModel)]="selectItemAccpu"
+						>
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.name">{{item.name}}</span>
+							</ng-template>
+						</ng-select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4"><label>Дата начала </label></div>
+					<div class="col-7"><input tabIndex="3" max="9999-12-12" type="date" class="form-control" [(ngModel)]="dateBegin" /></div>
+				</div>
+				<div class="row">
+					<div class="col-4"><label>Дата окончания </label></div>
+					<div class="col-7"><input tabIndex="4" max="9999-12-12" type="date" class="form-control" [(ngModel)]="dateEnd"/></div>
+				</div>
+				<div class="row">
+					<div class="col-4"><label>Расчетная дата</label></div>
+					<div class="col-7"><input tabIndex="5"  max="9999-12-12" type="date" class="form-control" [(ngModel)]="dateCalc"/></div>
+				</div>
+			</div>
+			<div class="col-4">
+				<div class="row">
+					<div class="col-6">
+						<button tabIndex="6" mat-raised-button class="w-100 m-1 btn-label" color="primary" (click)="onExecute()" [disabled]="loadingTable">Выполнить...</button>
+					</div>
+					<div class="col-6">
+						<div class="row">
+							<div class="col-12">
+								<ng-select
+									id="format"
+									tabIndex="1"
+									[items]="formatList"
+									bindLabel="name"
+									bindValue="id"
+									placeholder="Выберите формат печати"
+									loadingText="Загрузка..."
+									notFoundText="Не найдено"
+									class="text-left w-100 m-1"
+									[selectOnTab]="true"
+									[(ngModel)]="format"
+								>
+								</ng-select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+				<div class="row">
+					<div class="col-6">
+						<div class="button-container">
+							<div class="spinner-container" *ngIf="loadReport">
+								<mat-spinner diameter="24"></mat-spinner>
+							</div>
+							<button tabIndex="8"  mat-raised-button class="w-100 m-1 btn-label" (click)="openFastReport(false)" [disabled]="!dataMainTable || loadReport" >Просмотр</button>
+						</div>
+					</div>
+					<div class="col-6">
+						<div class="button-container">
+							<div class="spinner-container" *ngIf="loadReport">
+								<mat-spinner diameter="24"></mat-spinner>
+							</div>
+							<button tabIndex="8"  mat-raised-button class="w-100 m-1 btn-label" (click)="openFastReport(true)" [disabled]="!dataMainTable || loadReport" >Печать</button>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-6 text-left">
+						<mat-checkbox  class="w-100 pl-2 btn-label text-left" style="word-break:break-all" [(ngModel)]="ck_peny_enclosure"><label style="padding-top: 5px; white-space: break-spaces;  font-size: 10pt;  line-height: 1;">Приложение 1</label> </mat-checkbox>
+					</div>
+					<div class="col-6 text-left">
+						<mat-checkbox  class="w-100 pl-2 btn-label text-left" style="word-break:break-all" [(ngModel)]="ck_peny_enclosure2"><label style="padding-top: 5px; white-space: break-spaces;  font-size: 10pt;  line-height: 1;">Приложение 2</label> </mat-checkbox>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-6 text-left">
+						<mat-checkbox  class="w-100 pl-2 btn-label text-left" style="word-break:break-all" [(ngModel)]="ck_default"><label style="padding-top: 5px; white-space: break-spaces;  font-size: 10pt;  line-height: 1;">По умолчанию</label> </mat-checkbox>
+					</div>
+					<div class="col-6 text-left">
+						<mat-checkbox  class="w-100 pl-2 btn-label text-left" style="word-break:break-all" [(ngModel)]="ck_ignore_rules" (ngModelChange)="onChangeIgnoreRules($event)"><label style="padding-top: 5px; white-space: break-spaces;  font-size: 10pt;  line-height: 1;">Игнорировать правила неначисления пени</label> </mat-checkbox>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	<div class="text-center">
+		<span *ngIf="loadingTable" class="spinner-border spinner-border mt-3"></span>
+	</div>
+	<wbr>
+	<div class="table-content mr-3 ml-3" *ngIf="dataMainTable">
+		<p-toolbar>
+			<div class="p-toolbar-group-right">
+				<p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+									selectedItemsLabel="Выбрано колонок {0}" [style]="{minWidth: '200px'}" placeholder="Выберите колонки">
+				</p-multiSelect>
+				<mat-checkbox class="pl-2" (change)="onShowGroup(isGroup)" [(ngModel)]="isGroup">Отображать группу</mat-checkbox>
+				<mat-checkbox class="pl-2" [(ngModel)]="isAll">Раскрывать все списки</mat-checkbox>
+			</div>
+		</p-toolbar>
+		<p-table
+			#dt2
+			[value]="dataTable"
+			[dataKey]="isAll ? 'ID' : 'DATEB'"
+			[columns]="selectedColumns"
+			[reorderableColumns]="true"
+			[resizableColumns]="true"
+			columnResizeMode="expand"
+			[loading]="loadingTable"
+			sortMode="multiple"
+			styleClass="p-datatable-sm"
+			[scrollable]="true"
+			scrollHeight="400px"
+			id="Table"
+			[autoLayout]="true"
+			(onFilter)="onFilter()"
+		>
+			<ng-template pTemplate="colgroup">
+				<colgroup>
+					<col *ngFor="let col of colgroup">
+				</colgroup>
+			</ng-template>
+
+			<ng-template pTemplate="header"  let-columns>
+				<tr *ngIf="_groups">
+					<th style="width: 50px; border-right: none!important;"></th>
+					<th  class="border min-max-width" pResizableColumn *ngFor="let group of _groups" [colSpan]="group.fields.length" style="word-wrap: break-word;">{{group?.title}}</th>
+				</tr>
+				<tr>
+					<th style="width: 50px; border-right: none!important;"></th>
+					<th class="min-max-width-header" *ngFor="let col of columns" pResizableColumn pReorderableColumn [pSortableColumn]=col.field>
+						{{col.header}}<p-sortIcon [field]="col.field"></p-sortIcon>
+					</th>
+				</tr>
+				<tr>
+					<th style="width: 50px; border-right: none!important;"></th>
+					<th *ngFor="let col of columns" pResizableColumn>
+						<p-columnFilter *ngIf="col.type == 'String'" [field]="col.field" [showMenu]="false"  matchMode="in">
+							<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+								<p-multiSelect
+									class="color"
+									[ngModel]="value"
+									[options]="sourceFilter?.get(col.field)"
+									appendTo="body"
+									placeholder="Все"
+									selectedItemsLabel="Выбрано {totalRecords}"
+									(onPanelHide)="onClosePanelFilter(dt)"
+									(onChange)="filter($event.value)" [optionValue]="'name'" [optionLabel]="'name'">
+									<ng-template let-option pTemplate="item" >
+										<div class="p-multiselect-representative-option">
+											<span class="p-ml-1">{{option.name}}</span>
+										</div>
+									</ng-template>
+								</p-multiSelect>
+							</ng-template>
+						</p-columnFilter>
+
+
+
+
+						<p-columnFilter *ngIf="col.type == 'Decimal'" [field]="col.field" display="menu" placeholder="Введите значение"></p-columnFilter>
+						<p-columnFilter *ngIf="col.type == 'Date'" display="menu"  type="date" [matchMode]="'Равно'" [field]="col.field" [matchModeOptions]="matchModeOptions"></p-columnFilter>
+						<p-columnFilter *ngIf="col.type == 'DateTime'" display="menu"  type="date" [matchMode]="'Равно'" [field]="col.field" [matchModeOptions]="matchModeOptions"></p-columnFilter>
+					</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-rowData let-column let-debit let-index="rowIndex" let-columns="columns" let-expanded="expanded">
+				<tr [pReorderableRow]="index" [pSelectableRow]="column" (click)="onSelectItemTable(column)" [ngClass]="{'outofstock': column === record}" >
+					<td style="width: 50px; border-right: none!important;">
+						<button type="button" pButton pRipple [pRowToggler]="debit" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+					</td>
+					<td *ngFor="let col of columns" class="min-max-width">
+						<span *ngIf="col.type == 'Decimal'">{{rowData[col.field] | number:'1.2'}}</span>
+						<span *ngIf="col.type == 'Date'">{{rowData[col.field] | date:'dd.MM.yyyy'}}</span>
+						<span *ngIf="col.type == 'DateTime'">{{rowData[col.field] | date:'dd.MM.yyyy HH:mm:ss'}}</span>
+						<span *ngIf="col.type == 'String'">{{rowData[col.field] }}</span>
+					</td>
+
+				</tr>
+			</ng-template>
+
+			<ng-template pTemplate="rowexpansion" let-debit>
+
+				<tr>
+					<td colspan="10">
+							<p-table
+								[value]="debit.DECODING"
+								dataKey="id"
+								[autoLayout]="false"
+							>
+								<ng-template pTemplate="header">
+									<tr>
+										<th style="width: 6% ;font-size: 10pt;" pSortableColumn="ID">ИД<p-sortIcon field="ID"></p-sortIcon></th>
+										<th style="width: 20%;font-size: 10pt;" pSortableColumn="KO_NAME">Оборот <p-sortIcon field="KO_NAME"></p-sortIcon></th>
+										<th style="width: 6% ;font-size: 10pt;" pSortableColumn="SUMM">Сумма <p-sortIcon field="SUMM"></p-sortIcon></th>
+										<th style="width: 40%;font-size: 10pt;" pSortableColumn="NOTE_DOC">Основание <p-sortIcon field="NOTE_DOC"></p-sortIcon></th>
+										<th style="width: 12%;font-size: 10pt;" pSortableColumn="ENTRIED">Системная дата <p-sortIcon field="ENTRIED"></p-sortIcon></th>
+										<th style="width: 16%;font-size: 10pt;" pSortableColumn="WHO_ADD">Оператор <p-sortIcon field="WHO_ADD"></p-sortIcon></th>
+									</tr>
+								</ng-template>
+
+								<ng-template pTemplate="body" let-decod>
+									<tr>
+										<td>{{decod.ID}}</td>
+										<td>{{decod.KO_NAME}}</td>
+										<td>{{decod.SUMM}}</td>
+										<td>{{decod.NOTE_DOC}}</td>
+										<td>{{decod.ENTRIED | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+										<td>{{decod.WHO_ADD}}</td>
+									</tr>
+								</ng-template>
+								<ng-template pTemplate="emptymessage">
+									<tr>
+										<td colspan="6">Данные не найдены</td>
+									</tr>
+								</ng-template>
+							</p-table>
+
+					</td>
+				</tr>
+			</ng-template>
+
+
+			<ng-template pTemplate="footer" let-columns>
+				<tr >
+					<th style="width: 50px;background-color: #f4f4f4;font-weight: 700; border: 1px solid #afb6be; border-right: none!important;"></th>
+					<ng-container *ngFor="let field of columns">
+						<th style="background-color: #f4f4f4;font-weight: 700; border: 1px solid #afb6be" *ngIf="field.totalSum">{{getSum(field) | number:'1.2'}}</th>
+						<th style="background-color: #f4f4f4;font-weight: 700; border: 1px solid #afb6be"  *ngIf="!field.totalSum">-</th>
+					</ng-container>
+				</tr>
+			</ng-template>
+
+			<ng-template pTemplate="emptymessage">
+				<tr>
+					<td colspan="5">Не найдено</td>
+				</tr>
+			</ng-template>
+
+		</p-table>
+
+	</div>
+
+
+
+</div>

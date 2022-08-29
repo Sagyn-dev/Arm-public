@@ -1,0 +1,40 @@
+.file-container{
+	position: relative;
+	overflow: hidden;
+}
+.file-name{
+	z-index: -1;
+	padding-right: 35%;
+	font-size: small;
+}
+.file-button{
+	position: absolute;
+	z-index: 1;
+	top:0;
+	bottom:0;
+	right: 0;
+	background: #e9ecef;
+	margin: 1px;
+}
+
+input[type="file"] {
+	font-size: 100px;
+	left: 0;
+	opacity: 0;
+	position: absolute;
+	top: 0;
+}
+::ng-deep ng-select.ng-invalid.ng-touched .ng-select-container {
+	border-color: #dc3545;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px #fde6e8;
+}
+::ng-deep ng-select.ng-valid.ng-touched .ng-select-container {
+	border-color: #6bc502;
+}
+input.ng-dirty.ng-invalid {
+	border-color: #dc3545;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px #fde6e8;
+}
+input.ng-dirty.ng-valid {
+	border-color: #6bc502;
+}

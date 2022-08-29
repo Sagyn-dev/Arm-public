@@ -1,0 +1,19 @@
+<div style="text-align: center">
+    <webcam
+		 		#camera
+		 		[hidden]="flag_photo"
+            [trigger]="triggerObservable"
+            (imageCapture)="handleImage($event)"
+            *ngIf="showWebcam"
+            [imageQuality]="imageQuality"
+            [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable" (cameraSwitched)="cameraWasSwitched($event)"
+            (initError)="handleInitError($event)" [videoOptions]="{width: {min: 640, ideal: 1280, max:1920}, height: {min: 480, ideal: 720, max:1080}}"></webcam
+        >
+	<img *ngIf="flag_photo" [style.width.px]="width" [style.height.px]="height" class="img-fluid"  [src]="src_image.imageAsDataUrl" />
+    <br/>
+	 <button type='button' mat-icon-button color="primary" *ngIf="!flag_photo" (click)="triggerSnapshot()"><mat-icon>camera</mat-icon></button>
+	 <button type='button' mat-icon-button color="primary" *ngIf="!flag_photo" (click)="showNextWebcam(true)"><mat-icon>switch_camera</mat-icon></button>
+	 <button type='button' mat-icon-button color="primary" *ngIf="!flag_photo" [ngClass]="{'on':flagSerialImage,'off': !flagSerialImage}"  (click)="multiImage()"><mat-icon>collections</mat-icon></button>
+	 <button type='button' mat-icon-button color="primary" *ngIf="flag_photo" (click)="clear()"><mat-icon>clear</mat-icon></button>
+	 <button type='button' mat-icon-button color="primary" *ngIf="flag_photo" (click)="done()"><mat-icon>done</mat-icon></button>
+</div>
